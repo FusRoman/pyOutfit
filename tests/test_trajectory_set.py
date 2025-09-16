@@ -245,7 +245,7 @@ def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
     )
 
     print("--- start gauss iod ---")
-    orb, err = traj_set.estimate_all_orbits(pyoutfit_env, params, seed=42)
+    orb, err = traj_set.estimate_all_orbits(pyoutfit_env, params)
     print("--- done ---")
 
     print()

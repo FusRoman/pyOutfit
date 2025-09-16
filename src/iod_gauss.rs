@@ -1,5 +1,5 @@
 use pyo3::prelude::*;
-use pyo3::types::PyDict;
+use pyo3::types::{PyDict, PyType};
 
 use outfit::{
     CometaryElements as RsCometary, EquinoctialElements as RsEquinoctial,
@@ -64,6 +64,111 @@ impl From<RsCometary> for CometaryElements {
 
 #[pymethods]
 impl GaussResult {
+    /// Build a GaussResult from Keplerian elements.
+    ///
+    /// Arguments
+    /// -----------------
+    /// * `keplerian`: A `KeplerianElements` instance.
+    /// * `corrected`: If `True`, builds a corrected-stage result; otherwise preliminary (default: `False`).
+    ///
+    /// Return
+    /// ----------
+    /// * A `GaussResult` containing the provided element set.
+    ///
+    /// See also
+    /// ------------
+    /// * [`from_equinoctial`] – Build from equinoctial elements.
+    /// * [`from_cometary`] – Build from cometary elements.
+    /// * [`is_preliminary`], [`is_corrected`], [`elements_type`]
+    #[classmethod]
+    #[pyo3(text_signature = "(keplerian, corrected=False)")]
+    fn from_keplerian(
+        _cls: &Bound<'_, PyType>,
+        keplerian: KeplerianElements,
+        corrected: Option<bool>,
+    ) -> Self {
+        let elems = RsOrbitalElements::Keplerian(keplerian.inner);
+        if corrected.unwrap_or(false) {
+            Self {
+                inner: RsGaussResult::CorrectedOrbit(elems),
+            }
+        } else {
+            Self {
+                inner: RsGaussResult::PrelimOrbit(elems),
+            }
+        }
+    }
+
+    /// Build a GaussResult from Equinoctial elements.
+    ///
+    /// Arguments
+    /// -----------------
+    /// * `equinoctial`: An `EquinoctialElements` instance.
+    /// * `corrected`: If `True`, builds a corrected-stage result; otherwise preliminary (default: `False`).
+    ///
+    /// Return
+    /// ----------
+    /// * A `GaussResult` containing the provided element set.
+    ///
+    /// See also
+    /// ------------
+    /// * [`from_keplerian`] – Build from keplerian elements.
+    /// * [`from_cometary`] – Build from cometary elements.
+    /// * [`is_preliminary`], [`is_corrected`], [`elements_type`]
+    #[classmethod]
+    #[pyo3(text_signature = "(equinoctial, corrected=False)")]
+    fn from_equinoctial(
+        _cls: &Bound<'_, PyType>,
+        equinoctial: EquinoctialElements,
+        corrected: Option<bool>,
+    ) -> Self {
+        let elems = RsOrbitalElements::Equinoctial(equinoctial.inner);
+        if corrected.unwrap_or(false) {
+            Self {
+                inner: RsGaussResult::CorrectedOrbit(elems),
+            }
+        } else {
+            Self {
+                inner: RsGaussResult::PrelimOrbit(elems),
+            }
+        }
+    }
+
+    /// Build a GaussResult from Cometary elements.
+    ///
+    /// Arguments
+    /// -----------------
+    /// * `cometary`: A `CometaryElements` instance.
+    /// * `corrected`: If `True`, builds a corrected-stage result; otherwise preliminary (default: `False`).
+    ///
+    /// Return
+    /// ----------
+    /// * A `GaussResult` containing the provided element set.
+    ///
+    /// See also
+    /// ------------
+    /// * [`from_keplerian`] – Build from keplerian elements.
+    /// * [`from_equinoctial`] – Build from equinoctial elements.
+    /// * [`is_preliminary`], [`is_corrected`], [`elements_type`]
+    #[classmethod]
+    #[pyo3(text_signature = "(cometary, corrected=False)")]
+    fn from_cometary(
+        _cls: &Bound<'_, PyType>,
+        cometary: CometaryElements,
+        corrected: Option<bool>,
+    ) -> Self {
+        let elems = RsOrbitalElements::Cometary(cometary.inner);
+        if corrected.unwrap_or(false) {
+            Self {
+                inner: RsGaussResult::CorrectedOrbit(elems),
+            }
+        } else {
+            Self {
+                inner: RsGaussResult::PrelimOrbit(elems),
+            }
+        }
+    }
+
     /// Whether the result includes the post-Gauss correction step.
     ///
     /// Return
@@ -250,6 +355,50 @@ impl GaussResult {
 
 #[pymethods]
 impl KeplerianElements {
+    /// Build a new Keplerian element set.
+    ///
+    /// Arguments
+    /// -----------------
+    /// * `reference_epoch`: MJD (TDB).
+    /// * `semi_major_axis`: Semi-major axis (AU).
+    /// * `eccentricity`: Eccentricity (unitless).
+    /// * `inclination`: Inclination (rad).
+    /// * `ascending_node_longitude`: Longitude of ascending node Ω (rad).
+    /// * `periapsis_argument`: Argument of periapsis ω (rad).
+    /// * `mean_anomaly`: Mean anomaly M (rad).
+    ///
+    /// Return
+    /// ----------
+    /// * A new `KeplerianElements`.
+    ///
+    /// See also
+    /// ------------
+    /// * [`to_equinoctial`] – Convert to equinoctial elements.
+    #[new]
+    #[pyo3(
+        text_signature = "(reference_epoch, semi_major_axis, eccentricity, inclination, ascending_node_longitude, periapsis_argument, mean_anomaly)"
+    )]
+    fn new(
+        reference_epoch: f64,
+        semi_major_axis: f64,
+        eccentricity: f64,
+        inclination: f64,
+        ascending_node_longitude: f64,
+        periapsis_argument: f64,
+        mean_anomaly: f64,
+    ) -> Self {
+        let inner = RsKeplerian {
+            reference_epoch,
+            semi_major_axis,
+            eccentricity,
+            inclination,
+            ascending_node_longitude,
+            periapsis_argument,
+            mean_anomaly,
+        };
+        Self { inner }
+    }
+
     /// Reference epoch (MJD).
     #[getter]
     fn reference_epoch(&self) -> f64 {
@@ -319,6 +468,50 @@ impl KeplerianElements {
 
 #[pymethods]
 impl EquinoctialElements {
+    /// Build a new Equinoctial element set.
+    ///
+    /// Arguments
+    /// -----------------
+    /// * `reference_epoch`: MJD (TDB).
+    /// * `semi_major_axis`: Semi-major axis (AU).
+    /// * `eccentricity_sin_lon`: h = e * sin(ϖ).
+    /// * `eccentricity_cos_lon`: k = e * cos(ϖ).
+    /// * `tan_half_incl_sin_node`: p = tan(i/2) * sin(Ω).
+    /// * `tan_half_incl_cos_node`: q = tan(i/2) * cos(Ω).
+    /// * `mean_longitude`: ℓ (rad).
+    ///
+    /// Return
+    /// ----------
+    /// * A new `EquinoctialElements`.
+    ///
+    /// See also
+    /// ------------
+    /// * [`to_keplerian`] – Convert to keplerian elements.
+    #[new]
+    #[pyo3(
+        text_signature = "(reference_epoch, semi_major_axis, eccentricity_sin_lon, eccentricity_cos_lon, tan_half_incl_sin_node, tan_half_incl_cos_node, mean_longitude)"
+    )]
+    fn new(
+        reference_epoch: f64,
+        semi_major_axis: f64,
+        eccentricity_sin_lon: f64,
+        eccentricity_cos_lon: f64,
+        tan_half_incl_sin_node: f64,
+        tan_half_incl_cos_node: f64,
+        mean_longitude: f64,
+    ) -> Self {
+        let inner = RsEquinoctial {
+            reference_epoch,
+            semi_major_axis,
+            eccentricity_sin_lon,
+            eccentricity_cos_lon,
+            tan_half_incl_sin_node,
+            tan_half_incl_cos_node,
+            mean_longitude,
+        };
+        Self { inner }
+    }
+
     #[getter]
     fn reference_epoch(&self) -> f64 {
         self.inner.reference_epoch
@@ -381,6 +574,51 @@ impl EquinoctialElements {
 
 #[pymethods]
 impl CometaryElements {
+    /// Build a new Cometary element set.
+    ///
+    /// Arguments
+    /// -----------------
+    /// * `reference_epoch`: MJD (TDB).
+    /// * `perihelion_distance`: q (AU).
+    /// * `eccentricity`: e (≥ 1 for cometary).
+    /// * `inclination`: i (rad).
+    /// * `ascending_node_longitude`: Ω (rad).
+    /// * `periapsis_argument`: ω (rad).
+    /// * `true_anomaly`: ν at epoch (rad).
+    ///
+    /// Return
+    /// ----------
+    /// * A new `CometaryElements`.
+    ///
+    /// See also
+    /// ------------
+    /// * [`to_keplerian`] – Convert to keplerian (hyperbolic).
+    /// * [`to_equinoctial`] – Convert to equinoctial (hyperbolic).
+    #[new]
+    #[pyo3(
+        text_signature = "(reference_epoch, perihelion_distance, eccentricity, inclination, ascending_node_longitude, periapsis_argument, true_anomaly)"
+    )]
+    fn new(
+        reference_epoch: f64,
+        perihelion_distance: f64,
+        eccentricity: f64,
+        inclination: f64,
+        ascending_node_longitude: f64,
+        periapsis_argument: f64,
+        true_anomaly: f64,
+    ) -> Self {
+        let inner = RsCometary {
+            reference_epoch,
+            perihelion_distance,
+            eccentricity,
+            inclination,
+            ascending_node_longitude,
+            periapsis_argument,
+            true_anomaly,
+        };
+        Self { inner }
+    }
+
     #[getter]
     fn reference_epoch(&self) -> f64 {
         self.inner.reference_epoch
