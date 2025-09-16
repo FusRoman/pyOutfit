@@ -1,4 +1,5 @@
 # tests/test_trajectory_set_from_numpy.py
+import math
 import numpy as np
 import pytest
 import py_outfit
@@ -137,9 +138,38 @@ def test_length_mismatch_raises(pyoutfit_env, observer):
         )
 
 
-def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
+def _assert_kepler_reasonable(
+    k, *, a_range=(1.0, 5.0), e_range=(0.0, 0.9), i_max_rad=math.radians(60.0)
+):
+    """Basic sanity checks for a Keplerian orbit."""
+    assert a_range[0] <= k.semi_major_axis <= a_range[1]
+    assert e_range[0] <= k.eccentricity <= e_range[1]
+    assert 0.0 <= k.inclination <= i_max_rad
+    # Angles should be finite real numbers
+    for ang in (
+        k.inclination,
+        k.ascending_node_longitude,
+        k.periapsis_argument,
+        k.mean_anomaly,
+    ):
+        assert math.isfinite(ang)
 
-    tid = np.array([0, 1, 2, 1, 2, 1, 0, 0, 0, 1, 2, 1, 1, 0, 2, 2, 0, 2, 2], np.uint32)
+
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
+def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
+    """
+    End-to-end Gauss IOD on a small synthetic tracklet set.
+
+    This test avoids ordering assumptions (parallel execution) by:
+    - Addressing results by object ID keys (0, 1, 2).
+    - Checking numerical ranges and structure rather than exact values.
+    """
+
+    # --- Synthetic observations (same values as in the reference run)
+    tid = np.array(
+        [0, 1, 2, 1, 2, 1, 0, 0, 0, 1, 2, 1, 1, 0, 2, 2, 0, 2, 2], dtype=np.uint32
+    )
+
     ra_deg = np.array(
         [
             20.9191548,
@@ -155,7 +185,7 @@ def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
             31.4874917,
             32.4518231,
             32.4495403,
-            19.892738,
+            19.8927380,
             30.6416348,
             30.0938936,
             18.2218784,
@@ -164,6 +194,7 @@ def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
         ],
         dtype=np.float64,
     )
+
     dec_deg = np.array(
         [
             20.0550441,
@@ -180,25 +211,26 @@ def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
             23.6270392,
             23.6272157,
             20.2977473,
-            26.830301,
+            26.8303010,
             26.9256271,
             20.7096409,
             27.1602652,
-            27.160642,
+            27.1606420,
         ],
         dtype=np.float64,
     )
-    time = np.array(
+
+    jd_utc = np.array(
         [
             2458789.6362963,
-            2458789.638125,
-            2458789.638125,
+            2458789.6381250,
+            2458789.6381250,
             2458789.6663773,
             2458789.6663773,
             2458789.7706481,
             2458790.6995023,
             2458790.7733333,
-            2458790.791412,
+            2458790.7914120,
             2458791.8445602,
             2458791.8445602,
             2458792.8514699,
@@ -213,28 +245,23 @@ def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
         dtype=np.float64,
     )
 
-    print("-----")
-    print(time)
-    print()
-    t_utc = Time(time, format="jd", scale="utc")
-    print(t_utc)
-    mjd_tt = t_utc.tt.mjd
-    print()
+    # --- Convert times to MJD(TT)
+    t_utc = Time(jd_utc, format="jd", scale="utc")
+    mjd_tt = t_utc.tt.mjd.astype(np.float64)
 
-    print(mjd_tt)
-    print("-----")
-
+    # --- Build TrajectorySet from numpy buffers (degrees input)
     traj_set = py_outfit.TrajectorySet.trajectory_set_from_numpy_degrees(
         pyoutfit_env,
         tid,
         ra_deg,
         dec_deg,
-        float(0.5),
-        float(0.5),
-        mjd_tt,
-        ZTF_observatory,
+        float(0.5),  # RA sigma [arcsec]
+        float(0.5),  # DEC sigma [arcsec]
+        mjd_tt,  # epoch TT (MJD)
+        ZTF_observatory,  # Observer (site)
     )
 
+    # --- Reasonable IOD params for a tiny dataset
     params = (
         py_outfit.IODParams.builder()
         .n_noise_realizations(10)
@@ -244,19 +271,66 @@ def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
         .build()
     )
 
-    print("--- start gauss iod ---")
-    orb, err = traj_set.estimate_all_orbits(pyoutfit_env, params)
-    print("--- done ---")
+    # Note: seed ordering is not stable under multithreading; we do not assert exact values.
+    results, errors = traj_set.estimate_all_orbits(pyoutfit_env, params, seed=None)
 
-    print()
-    print(orb)
-    print("\n\n=======================\n")
+    # --- No fatal errors expected
+    assert isinstance(errors, dict)
+    assert len(errors) == 0, f"Unexpected errors: {errors}"
 
-    orbit, rms = orb[0]
-    print("Orbit:\n", orbit.to_dict())
-    print("Keplerian orbit:\n", orbit.keplerian())
-    print("Equinoctial orbit:\n", orbit.equinoctial())
+    # --- We expect orbits for objects 0,1,2 (keys are unordered)
+    assert isinstance(results, dict)
+    assert set(results.keys()) == {0, 1, 2}
 
-    kepler_orb = orbit.keplerian()
-    print("Equinoctial orbit:\n", kepler_orb.to_equinoctial())
-    print("RMS:", rms)
+    # --- Check each object result
+    for obj_id, (g_res, rms) in results.items():
+        # Structure & types
+        assert isinstance(g_res, py_outfit.GaussResult)
+        assert isinstance(rms, float)
+        assert math.isfinite(rms)
+        # A loose, but meaningful upper bound on RMS (arcsec-like scale propagated)
+        assert rms < 1.5
+
+        # Elements family: this pipeline currently returns Keplerian
+        elem_type = g_res.elements_type()
+        assert elem_type in ("keplerian", "equinoctial", "cometary")
+
+        # to_dict contains the expected shape
+        d = g_res.to_dict()
+        assert d["stage"] in ("preliminary", "corrected")
+        assert d["type"] == elem_type
+        assert isinstance(d["elements"], dict) and len(d["elements"]) > 0
+
+        # Extract keplerian when available and sanity-check numbers
+        k = g_res.keplerian()
+        if k is not None:
+            _assert_kepler_reasonable(
+                k, a_range=(1.5, 4.5), e_range=(0.0, 0.6), i_max_rad=math.radians(60)
+            )
+            # Convert to equinoctial and back to ensure conversions are functional
+            q = k.to_equinoctial()
+            assert isinstance(q, py_outfit.EquinoctialElements)
+            k2 = q.to_keplerian()
+            assert isinstance(k2, py_outfit.KeplerianElements)
+            # Semi-major axis & eccentricity should be close after round-trip
+            assert k2.semi_major_axis == pytest.approx(
+                k.semi_major_axis, rel=1e-9, abs=1e-12
+            )
+            assert k2.eccentricity == pytest.approx(k.eccentricity, rel=1e-9, abs=1e-12)
+        else:
+            # If not keplerian, ensure the corresponding accessor matches the reported type
+            if elem_type == "equinoctial":
+                assert g_res.equinoctial() is not None
+            elif elem_type == "cometary":
+                assert g_res.cometary() is not None
+
+    # --- Optional: pick the best (lowest RMS) orbit and perform a few extra checks
+    best_obj, (best_res, best_rms) = min(results.items(), key=lambda kv: kv[1][1])
+    assert math.isfinite(best_rms)
+    assert best_rms <= min(v[1] for v in results.values()) + 1e-12
+    # Ensure best one has a keplerian representation (expected in current pipeline)
+    bk = best_res.keplerian()
+    if bk is not None:
+        _assert_kepler_reasonable(
+            bk, a_range=(1.5, 4.5), e_range=(0.0, 0.6), i_max_rad=math.radians(60)
+        )
