@@ -24,5 +24,4 @@ distribution = false
 dev = [
     "ipython>=9.5.0",
     "pytest>=8.4.2",
-    "mypy>=1.18.1",
 ]

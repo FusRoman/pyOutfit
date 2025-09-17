@@ -48,7 +48,6 @@ def fake_equino():
 
 @pytest.fixture
 def fake_comet_hyperb():
-    # Cométaire hyperbolique plausible (e > 1)
     return dict(
         reference_epoch=60000.0,
         perihelion_distance=0.9,  # q (AU)
@@ -62,7 +61,6 @@ def fake_comet_hyperb():
 
 @pytest.fixture
 def fake_comet_parab():
-    # Parabolique (e == 1) → devrait lever ValueError pour conversions
     return dict(
         reference_epoch=60000.0,
         perihelion_distance=1.0,
@@ -142,7 +140,6 @@ def test_keplerian_to_equinoctial_and_back(fake_kepler):
     # Back to Keplerian
     k2 = q.to_keplerian()
     assert isinstance(k2, KeplerianElements)
-    # Tolérance modeste (angles peuvent être normalisés)
     assert_float_eq(k2.semi_major_axis, k.semi_major_axis, rtol=1e-9)
     assert_float_eq(k2.eccentricity, k.eccentricity, rtol=1e-9)
     assert_float_eq(k2.inclination, k.inclination, rtol=1e-9)
@@ -156,7 +153,6 @@ def test_keplerian_to_equinoctial_and_back(fake_kepler):
         k.periapsis_argument % (2 * math.pi),
         rtol=1e-8,
     )
-    # mean anomaly peut bouger légèrement selon conventions; on vérifie juste que c'est un réel fini
     assert math.isfinite(k2.mean_anomaly)
 
 

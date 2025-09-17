@@ -5,6 +5,8 @@ import pytest
 import py_outfit
 from astropy.time import Time
 
+from py_outfit import GaussResult
+
 
 def _build_arrays_degrees():
     """
@@ -326,6 +328,7 @@ def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
 
     # --- Optional: pick the best (lowest RMS) orbit and perform a few extra checks
     best_obj, (best_res, best_rms) = min(results.items(), key=lambda kv: kv[1][1])
+    best_res: GaussResult = best_res
     assert math.isfinite(best_rms)
     assert best_rms <= min(v[1] for v in results.values()) + 1e-12
     # Ensure best one has a keplerian representation (expected in current pipeline)

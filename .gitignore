@@ -6,3 +6,5 @@ __pycache__/
 .pdm-python
 target/
 test_local.py
+Agents.md
+*.so
