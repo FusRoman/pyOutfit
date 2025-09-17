@@ -10,7 +10,6 @@ use crate::IntoPyResult;
 /// See also
 /// ------------
 /// * [`Observer`] – Native Rust observer type.
-/// * [`PyOutfit::observer_from_mpc`] – Factory from MPC code.
 #[pyclass]
 pub struct Observer {
     // Use Arc to align with your existing API that often returns Arc<Observer>.

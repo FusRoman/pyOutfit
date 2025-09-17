@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "pyOutfit"
-version = "0.1.0"
+version = "1.0.0"
 description = "Default template for PDM package"
 authors = [{ name = "FusRoman", email = "roman.le-montagner@ijclab.in2p3.fr" }]
 dependencies = ["maturin>=1.9.4", "pip>=25.2", "numpy>=2.3.3", "pandas>=2.3.2", "astropy>=7.1.0", "pyarrow>=21.0.0"]

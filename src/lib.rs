@@ -1,36 +1,112 @@
-//! # pyOutfit: Python bindings for the Outfit orbit-determination engine
+//! # pyOutfit – High‑Performance Orbit Determination from Python
 //!
-//! `pyOutfit` exposes the high-performance Rust crate **Outfit** to Python,
-//! enabling **Gauss-based Initial Orbit Determination (IOD)**, observatory handling,
-//! and multi-representation orbital elements from Python with near-native speed.
+//! `pyOutfit` is the Python binding layer for the Rust crate **Outfit**: a
+//! modern, memory‑safe engine for **Orbit Determination (IOD)**,
+//! astrometric observation ingestion, and orbital element conversions.
+//! All numerically intensive routines (Gauss triplet solver, filtering,
+//! residual evaluation) execute in Rust for performance; Python gets a
+//! light, typed, ergonomic API for orchestration and analysis.
 //!
-//! Highlights
-//! -----------------
-//! * **Fast & safe**: heavy numerical work remains in Rust.
-//! * **Pythonic surface**: thin, minimal bindings with clean classes.
-//! * **Multiple element sets**: [`KeplerianElements`], [`EquinoctialElements`], [`CometaryElements`].
-//! * **Observatories**: query by MPC code, list current sites, and register observers.
+//! ## 1. Key Capabilities
+//! * **Gauss IOD** on observation triplets with iterative velocity refinement.
+//! * **Batch processing**: run IOD across many trajectories and collect per‑object results.
+//! * **Multiple orbital representations**: [`KeplerianElements`], [`EquinoctialElements`], [`CometaryElements`].
+//! * **Observer management**: create custom observatories or look them up by MPC code.
+//! * **Deterministic runs**: pass a seed when estimating all orbits for reproducibility.
+//! * **Low overhead**: zero‑copy ingestion path when angles are already in radians; single conversion if in degrees.
 //!
-//! Quick Start
-//! -----------------
+//! ## 2. Typical Workflow (Conceptual)
+//! 1. Build a global environment (`PyOutfit`) selecting an ephemeris & error model.
+//! 2. Register or fetch observers (MPC code, custom geodetic site, etc.).
+//! 3. Ingest observations into a [`trajectories::TrajectorySet`].
+//! 4. Configure an [`iod_params::IODParams`] object (triplet limits, gaps, noise, execution mode).
+//! 5. Run Gauss IOD (single trajectory or all trajectories) to obtain [`GaussResult`] + RMS scores.
+//! 6. Inspect, serialize, or transform orbital elements (e.g. Keplerian → Equinoctial).
+//!
+//! ## 3. Minimal Quick Start
 //! ```python
-//! from py_outfit import PyOutfit, IODParams
+//! from py_outfit import PyOutfit, IODParams, TrajectorySet
 //!
+//! # 1. Environment (ephemerides + error model)
 //! env = PyOutfit("horizon:DE440", "FCCT14")
-//! print(env.show_observatories())
+//!
+//! # 2. Observer (fetch by MPC code or create manually)
+//! ztf = env.get_observer_from_mpc_code("I41")
+//!
+//! # 3. (Synthetic) build a TrajectorySet from NumPy arrays (see README for full example)
+//! # ts = TrajectorySet.trajectory_set_from_numpy_degrees(...)
+//!
+//! # 4. IOD parameters (defaults + custom triplet cap)
+//! params = (IODParams.builder()
+//!           .max_triplets(200)
+//!           .build())
+//!
+//! # 5. Batch orbit estimation (returns two dictionaries)
+//! # ok, errors = ts.estimate_all_orbits(env, params, seed=42)
+//! # print(ok.keys(), errors)
 //! ```
 //!
-//! Error Handling
-//! -----------------
-//! Rust `OutfitError` values are mapped to Python `RuntimeError` via a small helper
-//! so you can use idiomatic `try/except` in Python. See [`IntoPyResult`] below.
+//! ## 4. Gauss IOD Internals (High Level)
+//! For each candidate triplet (i, j, k):
+//! 1. Solve topocentric distances via polynomial root finding.
+//! 2. Construct heliocentric position & preliminary velocity at the middle epoch.
+//! 3. Apply physical / geometric filters (eccentricity bounds, perihelion range, etc.).
+//! 4. Iterate (Lagrange coefficients) to refine velocity if acceptable.
+//! 5. Compute RMS of normalized residuals over an extended arc (if available).
+//! 6. Keep best‑scoring solution per trajectory (ties resolved deterministically).
 //!
-//! See also
-//! ------------
-//! * [`Outfit`] – Core Rust engine.
-//! * [`iod_params::IODParams`] – Tuning parameters for Gauss IOD.
-//! * [`trajectories::TrajectorySet`] – Batched storage + IOD helpers.
-//! * [`observer::Observer`] – Observatory definition and lookup.
+//! ## 5. Orbital Elements API
+//! A [`GaussResult`] may contain either a *preliminary* or *corrected* solution.
+//! Access convenience methods:
+//! * `gauss_res.elements_type()` – string tag of stored representation.
+//! * `gauss_res.keplerian()` / `equinoctial()` / `cometary()` – return typed element objects (or `None`).
+//! * Element objects expose read‑only numeric fields (semi‑major axis, eccentricity, inclination, etc.).
+//!
+//! ## 6. Error Handling Strategy
+//! The Rust core defines `OutfitError` variants (I/O failures, invalid numeric states,
+//! infeasible triplets, non‑finite scores). They are converted to Python `RuntimeError`
+//! transparently; use idiomatic `try/except` in user code. This module provides a
+//! small helper trait to map `Result<T, OutfitError>` into `PyResult<T>` so internal
+//! code can still use the `?` operator.
+//!
+//! ## 7. Performance Notes
+//! * Critical loops execute with the Python GIL released (PyO3 `#[pyo3(text_signature=...)]`
+//!   not shown here but handled inside Rust functions).
+//! * Radian input path avoids memory duplication; degree arrays are converted exactly once.
+//! * Batch IOD derives per‑trajectory RNG seeds from a single base seed for reproducibility.
+//! * Parallel execution (if exposed in future bindings) will mirror the Rust feature flag `parallel`.
+//!
+//! ## 8. Determinism & Reproducibility
+//! Provide an explicit `seed` to `TrajectorySet.estimate_all_orbits` for deterministic
+//! noise realizations / triplet ordering. Omit the seed to let the system RNG choose.
+//!
+//! ## 9. Limitations / Roadmap (Bindings Perspective)
+//! * Only Gauss IOD is currently exposed (no full least‑squares refinement yet).
+//! * Alternative IOD methods (e.g. Vaisala) and hyperbolic solutions are planned upstream.
+//! * Advanced progress instrumentation & parallel knobs may expand as Rust features mature.
+//!
+//! ## 10. Design Principles
+//! * "Do the heavy work in Rust; keep Python simple".
+//! * Predictable, explicit APIs (no hidden global state beyond the environment object).
+//! * Clear separation: environment (global), trajectories (container), observations (per object), elements (mathematical state).
+//!
+//! ## 11. Related Types (See Also)
+//! * [`PyOutfit`] – Global ephemerides + observatory registry.
+//! * [`observer::Observer`] – Geodetic / MPC site wrapper.
+//! * [`iod_params::IODParams`] – Builder for solver & filtering configuration.
+//! * [`trajectories::TrajectorySet`] – Mapping of object/trajectory IDs → observations.
+//! * [`observations::Observations`] – Per‑trajectory readonly access & NumPy export.
+//! * [`iod_gauss::GaussResult`] – Orbit solution (elements + metadata).
+//! * [`orbit_type::keplerian::KeplerianElements`], [`orbit_type::equinoctial::EquinoctialElements`], [`orbit_type::cometary::CometaryElements`].
+//!
+//! ## 12. Minimal Error Handling Example
+//! ```python
+//! from py_outfit import PyOutfit
+//! try:
+//!     env = PyOutfit("horizon:DE440", "VFCC17")
+//! except RuntimeError as exc:
+//!     print("Failed to initialize environment:", exc)
+//! ```
 pub mod iod_gauss;
 pub mod iod_params;
 pub mod observations;
@@ -141,7 +217,8 @@ impl PyOutfit {
     /// ------------
     /// * [`observer::Observer`] – Construction and fields.
     pub fn add_observer(&mut self, observer: &Observer) -> PyResult<()> {
-        Ok(self.inner.add_observer(observer.inner.clone()))
+        self.inner.add_observer(observer.inner.clone());
+        Ok(())
     }
 
     /// Render a human-readable list of currently known observatories.

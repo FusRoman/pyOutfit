@@ -305,8 +305,8 @@ impl TrajectorySet {
     /// ------------
     /// * [`TrajectorySet::trajectory_set_from_numpy_radians`] – Build set from radian inputs.
     /// * [`TrajectorySet::trajectory_set_from_numpy_degrees`] – Build set with degree→radian conversion.
-    /// * [`PyIODParams`] – Initial orbit determination configuration.
-    /// * [`PyGaussResult`] – Result wrapper for the Gauss IOD.
+    /// * [`IODParams`] – Initial orbit determination configuration.
+    /// * [`GaussResult`] – Result wrapper for the Gauss IOD.
     pub fn estimate_all_orbits(
         &mut self,
         py: Python<'_>,

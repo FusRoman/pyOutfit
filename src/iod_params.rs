@@ -14,6 +14,12 @@ pub struct IODParamsBuilder {
     do_parallel: bool,
 }
 
+impl Default for IODParams {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[pymethods]
 impl IODParams {
     /// Create a new IODParams instance with default values.

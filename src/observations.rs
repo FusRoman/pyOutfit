@@ -6,12 +6,15 @@ use pyo3::{
     types::{PyIterator, PyList},
 };
 
+type ObsArrays<'py> = (
+    Bound<'py, PyArray1<f64>>,
+    Bound<'py, PyArray1<f64>>,
+    Bound<'py, PyArray1<f64>>,
+    Bound<'py, PyArray1<f64>>,
+    Bound<'py, PyArray1<f64>>,
+);
+
 /// Read-only Python view over a single trajectory (owning clone of observations).
-///
-/// See also
-/// ------------
-/// * [`TrajectorySet`] – Container mapping object keys to trajectories.
-/// * [`to_numpy`] – Export RA/DEC/MJD and uncertainties to NumPy arrays.
 #[pyclass]
 pub struct Observations {
     pub(crate) inner: outfit::Observations, // alias de Vec<Observation>
@@ -61,16 +64,7 @@ impl Observations {
     }
 
     /// Export arrays to NumPy (rad / days).
-    fn to_numpy<'py>(
-        &self,
-        py: Python<'py>,
-    ) -> PyResult<(
-        Bound<'py, PyArray1<f64>>,
-        Bound<'py, PyArray1<f64>>,
-        Bound<'py, PyArray1<f64>>,
-        Bound<'py, PyArray1<f64>>,
-        Bound<'py, PyArray1<f64>>,
-    )> {
+    fn to_numpy<'py>(&self, py: Python<'py>) -> PyResult<ObsArrays<'py>> {
         let n = self.inner.len();
         let mut mjd = Vec::with_capacity(n);
         let mut ra = Vec::with_capacity(n);
