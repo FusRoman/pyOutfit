@@ -3,7 +3,6 @@ import math
 import numpy as np
 import pytest
 import py_outfit
-from astropy.time import Time
 
 from py_outfit import GaussResult, KeplerianElements
 
