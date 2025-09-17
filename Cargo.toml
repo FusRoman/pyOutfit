@@ -35,3 +35,6 @@ debug = false
 lto = "fat"
 codegen-units = 1
 strip = true
+
+[dev-dependencies]
+husky-rs = "0.1.5"
