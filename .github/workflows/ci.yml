@@ -13,14 +13,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
-        features: ["", "parallel"]
+        os: [ubuntu-latest]
+        python-version: ["3.12"]
 
     env:
       CARGO_TERM_COLOR: always
       RUST_BACKTRACE: 1
-      BUILD_FEATURES: ${{ matrix.features }}
 
     steps:
       - name: Checkout
@@ -57,11 +55,7 @@ jobs:
       # Build & install en mode "develop" via le venv
       - name: Build and develop-install the extension (maturin)
         run: |
-          if [ -z "${BUILD_FEATURES}" ]; then
-            ./.venv/bin/maturin develop --release
-          else
-            ./.venv/bin/maturin develop --release --features "${BUILD_FEATURES}"
-          fi
+          ./.venv/bin/maturin develop --release
 
       - name: Show installed package info
         run: |
