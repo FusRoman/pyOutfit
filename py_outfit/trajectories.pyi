@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Iterator, Optional, Tuple, Union
 
 import numpy as np
 from numpy.typing import NDArray
 
-# Forward refs to keep the stub standalone; replace with real imports if you split files.
-class PyOutfit: ...
-class Observer: ...
-class IODParams: ...
-class GaussResult: ...
+from py_outfit.iod_gauss import GaussResult
+from py_outfit.iod_params import IODParams
+from py_outfit.observations import Observations
+from py_outfit.observer import Observer
+from py_outfit.py_outfit import PyOutfit
 
+Key = Union[int, str]
 
 class TrajectorySet:
     """
@@ -27,6 +28,126 @@ class TrajectorySet:
     # --- Introspection & stats ---
     def __repr__(self) -> str:
         """Return a concise, human-friendly representation."""
+        ...
+
+        def __len__(self) -> int: ...
+
+    def __contains__(self, key: Key) -> bool:
+        """
+        Membership test (like a Python dict).
+
+        Arguments
+        -----------------
+        * `key`: Object identifier (int MPC packed code or string id).
+
+        Return
+        ----------
+        * `True` if the trajectory exists in the set, `False` otherwise.
+
+        See also
+        ------------
+        * `__getitem__` – Retrieve the associated `Observations` view.
+        """
+        ...
+
+    def __getitem__(self, key: Key) -> Observations:
+        """
+        Subscript access (dict-like): return the `Observations` of a given object.
+
+        Arguments
+        -----------------
+        * `key`: Object identifier (int or str).
+
+        Return
+        ----------
+        * An `Observations` view for that trajectory.
+
+        Raises
+        ----------
+        * `KeyError` if the key is not present.
+
+        See also
+        ------------
+        * `keys` – List available keys.
+        * `values` – List all `Observations`.
+        * `items` – Pairs `(key, Observations)`.
+        """
+        ...
+
+    def keys(self) -> list[Key]:
+        """
+        Return the list of keys (like `dict.keys()`).
+
+        Arguments
+        -----------------
+        * *(none)*
+
+        Return
+        ----------
+        * `list[Key]` of all object identifiers.
+
+        See also
+        ------------
+        * `values` – All trajectories.
+        * `items` – Key/value pairs.
+        """
+        ...
+
+    def values(self) -> list[Observations]:
+        """
+        Return the list of trajectories (like `dict.values()`).
+
+        Arguments
+        -----------------
+        * *(none)*
+
+        Return
+        ----------
+        * `list[Observations]` containing one entry per object.
+
+        See also
+        ------------
+        * `keys` – All keys.
+        * `items` – Key/value pairs.
+        """
+        ...
+
+    def items(self) -> list[tuple[Key, Observations]]:
+        """
+        Return the list of `(key, Observations)` pairs (like `dict.items()`).
+
+        Arguments
+        -----------------
+        * *(none)*
+
+        Return
+        ----------
+        * `list[tuple[Key, Observations]]`.
+
+        See also
+        ------------
+        * `keys` – All keys.
+        * `values` – All trajectories.
+        """
+        ...
+
+    def __iter__(self) -> Iterator[Key]:
+        """
+        Iterate over keys (like a dict).
+
+        Arguments
+        -----------------
+        * *(none)*
+
+        Return
+        ----------
+        * `Iterator[Key]` yielding object identifiers.
+
+        See also
+        ------------
+        * `keys` – Materialize all keys as a list.
+        * `__contains__` – Membership test.
+        """
         ...
 
     def total_observations(self) -> int:
@@ -59,7 +180,6 @@ class TrajectorySet:
           `"No trajectories available."` if empty.
         """
         ...
-
     # --- Ingestion from NumPy ---
     @staticmethod
     def trajectory_set_from_numpy_radians(
@@ -139,7 +259,6 @@ class TrajectorySet:
         * `trajectory_set_from_numpy_radians` — Zero-copy variant for radian inputs.
         """
         ...
-
     # --- Batch IOD ---
     def estimate_all_orbits(
         self,

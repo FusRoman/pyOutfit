@@ -5,7 +5,7 @@ import pytest
 import py_outfit
 from astropy.time import Time
 
-from py_outfit import GaussResult
+from py_outfit import GaussResult, KeplerianElements
 
 
 def _build_arrays_degrees():
@@ -141,7 +141,11 @@ def test_length_mismatch_raises(pyoutfit_env, observer):
 
 
 def _assert_kepler_reasonable(
-    k, *, a_range=(1.0, 5.0), e_range=(0.0, 0.9), i_max_rad=math.radians(60.0)
+    k: KeplerianElements,
+    *,
+    a_range=(1.0, 5.0),
+    e_range=(0.0, 0.9),
+    i_max_rad=math.radians(60.0),
 ):
     """Basic sanity checks for a Keplerian orbit."""
     assert a_range[0] <= k.semi_major_axis <= a_range[1]
@@ -158,7 +162,7 @@ def _assert_kepler_reasonable(
 
 
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
+def test_iod_from_vec(pyoutfit_env, small_traj_set):
     """
     End-to-end Gauss IOD on a small synthetic tracklet set.
 
@@ -166,103 +170,6 @@ def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
     - Addressing results by object ID keys (0, 1, 2).
     - Checking numerical ranges and structure rather than exact values.
     """
-
-    # --- Synthetic observations (same values as in the reference run)
-    tid = np.array(
-        [0, 1, 2, 1, 2, 1, 0, 0, 0, 1, 2, 1, 1, 0, 2, 2, 0, 2, 2], dtype=np.uint32
-    )
-
-    ra_deg = np.array(
-        [
-            20.9191548,
-            33.4247141,
-            32.1435128,
-            33.4159091,
-            32.1347282,
-            33.3829299,
-            20.6388309,
-            20.6187259,
-            20.6137886,
-            32.7525147,
-            31.4874917,
-            32.4518231,
-            32.4495403,
-            19.8927380,
-            30.6416348,
-            30.0938936,
-            18.2218784,
-            28.3859403,
-            28.3818327,
-        ],
-        dtype=np.float64,
-    )
-
-    dec_deg = np.array(
-        [
-            20.0550441,
-            23.5516817,
-            26.5139615,
-            23.5525348,
-            26.5160622,
-            23.5555991,
-            20.1218532,
-            20.1264229,
-            20.1275173,
-            23.6064063,
-            26.6622284,
-            23.6270392,
-            23.6272157,
-            20.2977473,
-            26.8303010,
-            26.9256271,
-            20.7096409,
-            27.1602652,
-            27.1606420,
-        ],
-        dtype=np.float64,
-    )
-
-    jd_utc = np.array(
-        [
-            2458789.6362963,
-            2458789.6381250,
-            2458789.6381250,
-            2458789.6663773,
-            2458789.6663773,
-            2458789.7706481,
-            2458790.6995023,
-            2458790.7733333,
-            2458790.7914120,
-            2458791.8445602,
-            2458791.8445602,
-            2458792.8514699,
-            2458792.8590741,
-            2458793.6896759,
-            2458794.7996759,
-            2458796.7965162,
-            2458801.7863426,
-            2458803.7699537,
-            2458803.7875231,
-        ],
-        dtype=np.float64,
-    )
-
-    # --- Convert times to MJD(TT)
-    t_utc = Time(jd_utc, format="jd", scale="utc")
-    mjd_tt = t_utc.tt.mjd.astype(np.float64)
-
-    # --- Build TrajectorySet from numpy buffers (degrees input)
-    traj_set = py_outfit.TrajectorySet.trajectory_set_from_numpy_degrees(
-        pyoutfit_env,
-        tid,
-        ra_deg,
-        dec_deg,
-        float(0.5),  # RA sigma [arcsec]
-        float(0.5),  # DEC sigma [arcsec]
-        mjd_tt,  # epoch TT (MJD)
-        ZTF_observatory,  # Observer (site)
-    )
-
     # --- Reasonable IOD params for a tiny dataset
     params = (
         py_outfit.IODParams.builder()
@@ -272,6 +179,8 @@ def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
         .max_triplets(30)
         .build()
     )
+
+    traj_set = small_traj_set[0]
 
     # Note: seed ordering is not stable under multithreading; we do not assert exact values.
     results, errors = traj_set.estimate_all_orbits(pyoutfit_env, params, seed=None)
@@ -337,3 +246,148 @@ def test_iod_from_vec(pyoutfit_env, ZTF_observatory):
         _assert_kepler_reasonable(
             bk, a_range=(1.5, 4.5), e_range=(0.0, 0.6), i_max_rad=math.radians(60)
         )
+
+
+# ----------------------------------------------------------------------
+# Tests for dict-like behavior
+# ----------------------------------------------------------------------
+
+def test_len_and_contains_and_getitem_types(small_traj_set):
+    """Check __len__, __contains__ and that __getitem__ returns Observations."""
+    (traj_set, counts) = small_traj_set
+    import py_outfit as py_outfit
+
+    # __len__
+    assert len(traj_set) == len(counts)
+
+    # __contains__
+    for k in counts.keys():
+        assert (k in traj_set) is True
+    assert (9999 in traj_set) is False
+
+    # __getitem__ type
+    for k in counts.keys():
+        obs = traj_set[k]
+        # ensure it is the Observations wrapper
+        assert isinstance(obs, py_outfit.Observations)
+
+
+def test_keys_values_items_roundtrip(small_traj_set):
+    """Check keys/values/items consistency and lengths."""
+    traj_set, counts = small_traj_set
+    import py_outfit as py_outfit
+
+    keys = traj_set.keys()
+    values = traj_set.values()
+    items = traj_set.items()
+
+    # Basic types
+    assert isinstance(keys, list)
+    assert isinstance(values, list)
+    assert isinstance(items, list)
+
+    # Lengths are consistent
+    assert len(keys) == len(values) == len(items) == len(counts)
+
+    # items() pairs match keys() and values()
+    keys_from_items = [k for (k, _) in items]
+    assert set(keys_from_items) == set(keys)
+
+    # Each value must be an Observations wrapper
+    for v in values:
+        assert isinstance(v, py_outfit.Observations)
+
+
+def test_iter_over_keys_matches_keys_list(small_traj_set):
+    """__iter__ yields exactly the same set of keys as keys()."""
+    traj_set, _ = small_traj_set
+    keys_list = set(traj_set.keys())
+    keys_iter = set(iter(traj_set))
+    assert keys_iter == keys_list
+
+
+def test_getitem_raises_keyerror_on_missing(small_traj_set):
+    """Indexing with a missing key must raise KeyError."""
+    traj_set, _ = small_traj_set
+    with pytest.raises(KeyError):
+        _ = traj_set[424242]
+
+
+# ----------------------------------------------------------------------
+# Tests for Observations wrapper behavior
+# ----------------------------------------------------------------------
+
+def test_observations_len_and_indexing(small_traj_set):
+    """Check Observations.__len__ and __getitem__ (including negative index)."""
+    traj_set, counts = small_traj_set
+
+    for key, expected_n in counts.items():
+        obs = traj_set[key]
+        # length
+        assert len(obs) == expected_n
+
+        # positive index
+        row0 = obs[0]
+        assert isinstance(row0, tuple) and len(row0) == 5
+
+        # negative index (last row)
+        row_last = obs[-1]
+        assert isinstance(row_last, tuple) and len(row_last) == 5
+
+        # index bounds
+        with pytest.raises(IndexError):
+            _ = obs[expected_n]
+        with pytest.raises(IndexError):
+            _ = obs[-(expected_n + 1)]
+
+
+def test_observations_iter_and_to_list(small_traj_set):
+    """Iterating Observations yields same number of rows as to_list()."""
+    traj_set, counts = small_traj_set
+
+    for key, expected_n in counts.items():
+        obs = traj_set[key]
+        rows = list(iter(obs))
+        lst = obs.to_list()
+
+        assert isinstance(lst, list)
+        assert len(rows) == expected_n
+        assert len(lst) == expected_n
+
+        if expected_n > 0:
+            # Each row is a 5-tuple of floats
+            r0 = rows[0]
+            assert isinstance(r0, tuple) and len(r0) == 5
+            assert all(isinstance(x, float) for x in r0)
+
+
+def test_observations_to_numpy_shapes_and_dtypes(small_traj_set):
+    """to_numpy returns 5 float64 1D arrays with consistent lengths."""
+    traj_set, counts = small_traj_set
+
+    for key, expected_n in counts.items():
+        obs = traj_set[key]
+        (mjd, ra, dec, sra, sdec) = obs.to_numpy()
+
+        # dtypes
+        assert mjd.dtype == np.float64
+        assert ra.dtype == np.float64
+        assert dec.dtype == np.float64
+        assert sra.dtype == np.float64
+        assert sdec.dtype == np.float64
+
+        # shapes/lengths
+        assert mjd.shape == (expected_n,)
+        assert ra.shape == (expected_n,)
+        assert dec.shape == (expected_n,)
+        assert sra.shape == (expected_n,)
+        assert sdec.shape == (expected_n,)
+
+
+def test_counts_match_grouping_by_tid(small_traj_set):
+    """Cross-check: counts from Python match the original grouping by tid."""
+    traj_set, counts = small_traj_set
+
+    # Length per key from the mapping interface
+    got = {k: len(traj_set[k]) for k in traj_set}
+    assert got == dict(counts)

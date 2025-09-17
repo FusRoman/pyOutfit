@@ -8,6 +8,7 @@ from py_outfit.orbit_type.cometary import CometaryElements
 from py_outfit.orbit_type.equinoctial import EquinoctialElements
 from py_outfit.orbit_type.keplerian import KeplerianElements
 from py_outfit.trajectories import TrajectorySet
+from py_outfit.observations import Observations
 
 __all__ = [
     "PyOutfit",
@@ -18,6 +19,7 @@ __all__ = [
     "KeplerianElements",
     "EquinoctialElements",
     "CometaryElements",
+    "Observations",
 ]
 
 class PyOutfit:

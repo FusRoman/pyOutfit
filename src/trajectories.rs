@@ -8,13 +8,18 @@ use outfit::{
     },
     FullOrbitResult, ObjectNumber,
 };
-use pyo3::{exceptions::PyValueError, prelude::*, types::PyDict};
+use pyo3::{
+    exceptions::{PyKeyError, PyValueError},
+    prelude::*,
+    types::{PyDict, PyIterator, PyList},
+};
 
 use rand::rngs::StdRng;
 use rand::SeedableRng;
 
 use crate::{
-    iod_gauss::GaussResult, iod_params::IODParams, observer::Observer, IntoPyResult, PyOutfit,
+    iod_gauss::GaussResult, iod_params::IODParams, observations::Observations, observer::Observer,
+    IntoPyResult, PyOutfit,
 };
 
 use pyo3::types::{PyInt, PyString};
@@ -36,6 +41,81 @@ impl TrajectorySet {
     /// Human-friendly representation.
     fn __repr__(&self) -> String {
         format!("TrajectorySet(num_trajectories={})", self.inner.len())
+    }
+
+    /// Number of trajectories (mapping length).
+    fn __len__(&self) -> usize {
+        self.inner.len()
+    }
+
+    /// `key in ts` support.
+    fn __contains__(&self, key: &Bound<'_, PyAny>) -> PyResult<bool> {
+        let k = py_to_object_number(key)?;
+        Ok(self.inner.contains_key(&k))
+    }
+
+    /// Subscript access: `ts[key] -> Trajectory`.
+    ///
+    /// See also
+    /// ------------
+    /// * [`keys`] – Keys list.
+    /// * [`values`] – Trajectory list.
+    /// * [`items`] – Pairs `(key, Trajectory)`.
+    fn __getitem__(&self, py: Python<'_>, key: &Bound<'_, PyAny>) -> PyResult<Py<Observations>> {
+        let k = py_to_object_number(key)?;
+        match self.inner.get(&k) {
+            Some(obs_list) => Py::new(
+                py,
+                Observations {
+                    inner: obs_list.clone(),
+                },
+            ),
+            None => Err(PyKeyError::new_err(format!("Key not found: {k:?}"))),
+        }
+    }
+
+    /// Return the list of keys (like `dict.keys()`).
+    fn keys<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyList>> {
+        let out = PyList::empty(py);
+        for k in self.inner.keys() {
+            out.append(object_number_to_py(py, k)?)?;
+        }
+        Ok(out)
+    }
+
+    /// Return the list of `Trajectory` (like `dict.values()`).
+    fn values<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyList>> {
+        let out = PyList::empty(py);
+        for v in self.inner.values() {
+            out.append(Py::new(py, Observations { inner: v.clone() })?)?;
+        }
+        Ok(out)
+    }
+
+    /// Return list of `(key, Trajectory)` pairs (like `dict.items()`).
+    fn items<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyList>> {
+        let out = PyList::empty(py);
+        for (k, v) in &self.inner {
+            let py_k = object_number_to_py(py, k)?;
+            let tr = Py::new(py, Observations { inner: v.clone() })?;
+            let tup = (py_k, tr).into_pyobject(py)?;
+            out.append(tup)?;
+        }
+        Ok(out)
+    }
+
+    /// Iterate over keys (like a dict).
+    fn __iter__(slf: PyRef<'_, Self>) -> PyResult<Py<PyIterator>> {
+        Python::attach(|py| {
+            let list = PyList::empty(py);
+            for k in slf.inner.keys() {
+                let py_k = object_number_to_py(py, k)?;
+                list.append(py_k)?;
+            }
+
+            let it_bound = PyIterator::from_object(list.as_any())?;
+            Ok(it_bound.unbind())
+        })
     }
 
     fn total_observations(&self) -> usize {
@@ -299,4 +379,24 @@ fn object_number_to_py<'py>(py: Python<'py>, key: &ObjectNumber) -> PyResult<Bou
             Ok(b.into_any())
         }
     }
+}
+
+// -----------------------------------------------------------------------------
+// Helpers: Python key -> ObjectNumber
+// -----------------------------------------------------------------------------
+
+fn py_to_object_number(key: &Bound<'_, PyAny>) -> PyResult<ObjectNumber> {
+    if let Ok(i) = key.extract::<u64>() {
+        let v = u32::try_from(i).map_err(|_| {
+            PyValueError::new_err(format!("Integer key too large for ObjectNumber::Int: {i}"))
+        })?;
+        return Ok(ObjectNumber::Int(v));
+    }
+    // sinon str
+    if let Ok(s) = key.extract::<String>() {
+        return Ok(ObjectNumber::String(s));
+    }
+    Err(PyValueError::new_err(
+        "Unsupported key type: expected int or str",
+    ))
 }

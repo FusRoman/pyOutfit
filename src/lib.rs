@@ -36,6 +36,7 @@ pub mod iod_params;
 pub mod observer;
 pub mod trajectories;
 pub mod orbit_type;
+pub mod observations;
 
 use outfit::Outfit;
 use pyo3::{exceptions::PyRuntimeError, prelude::*};
@@ -205,6 +206,7 @@ fn py_outfit(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // IOD configuration and trajectory handling.
     m.add_class::<iod_params::IODParams>()?;
     m.add_class::<trajectories::TrajectorySet>()?;
+    m.add_class::<observations::Observations>()?;
 
     // Orbit results and element sets.
     m.add_class::<GaussResult>()?;
