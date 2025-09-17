@@ -1,7 +1,21 @@
 [package]
 name = "pyOutfit"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
+description = "Rust crate exposing Outfit orbit-determination core with PyO3 bindings for Python (IOD, element conversions, observers, parallel batch processing)."
+license-file = "LICENSE"
+rust-version = "1.82"
+readme = "README.md"
+keywords = [
+    "python",
+    "astronomy",
+    "orbit-determination",
+    "asteroid",
+    "ephemeris",
+    "astrometry",
+]
+categories = ["science", "parsing", "data-structures", "api-bindings"]
+authors = ["Roman Le Montagner <roman.le-montagner@ijclab.in2p3.fr>"]
 
 [lib]
 name = "py_outfit"
@@ -15,3 +29,9 @@ outfit = { version = "2.0.0", path = "/home/roman/Documents/Programmation/Rust/O
 numpy = { version = "0.26.0", default-features = false }
 pyo3 = { version = "0.26", features = ["extension-module"] }
 rand = { version = "0.9.2", default-features = false, features = ["std_rng", "os_rng"] }
+
+[profile.release]
+debug = false
+lto = "fat"
+codegen-units = 1
+strip = true
