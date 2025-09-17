@@ -4,15 +4,26 @@
 
 High-performance Python bindings for the **Outfit** orbit-determination engine (Initial Orbit Determination, observation ingestion, orbital element conversions & batch processing) powered by Rust + PyO3.
 
-[![License: CeCILL-C](https://img.shields.io/badge/license-CeCILL--C-blue.svg)](LICENSE)
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](pyproject.toml)
-[![Rust 1.82+](https://img.shields.io/badge/rust-1.82%2B-orange.svg)](Cargo.toml)
-[![Build (maturin)](https://img.shields.io/badge/build-maturin-informational.svg)](https://github.com/PyO3/maturin)
-[![Platform](https://img.shields.io/badge/platform-Linux%20|%20macOS%20|%20Windows-lightgrey.svg)](#)
-[![Status](https://img.shields.io/badge/status-alpha-orange.svg)](#roadmap--status)
-<!-- Uncomment once published on PyPI
-[![PyPI version](https://img.shields.io/pypi/v/pyOutfit.svg)](https://pypi.org/project/pyOutfit/)
-[![Downloads](https://img.shields.io/pypi/dm/pyOutfit.svg)](https://pypistats.org/packages/pyOutfit)
+<!-- pyOutfit badges -->
+<p>
+	<strong>pyOutfit</strong><br/>
+	<a href="https://github.com/FusRoman/pyOutfit/actions/workflows/ci.yml"><img src="https://github.com/FusRoman/pyOutfit/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"/></a>
+	<a href="https://pypi.org/project/pyOutfit/"><img src="https://img.shields.io/pypi/v/pyOutfit.svg" alt="PyPI version"/></a>
+	<a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.12-blue.svg" alt="Python 3.12"/></a>
+	<a href="https://github.com/PyO3/maturin"><img src="https://img.shields.io/badge/build-maturin-informational.svg" alt="Build (maturin)"/></a>
+	<a href="LICENSE"><img src="https://img.shields.io/badge/license-CeCILL--C-blue.svg" alt="License: CeCILL-C"/></a>
+</p>
+
+<!-- Upstream Outfit (Rust core) badges -->
+<p>
+	<strong>Upstream Outfit (Rust core)</strong><br/>
+	<a href="https://crates.io/crates/outfit"><img src="https://img.shields.io/crates/v/outfit.svg" alt="crates.io"/></a>
+	<a href="https://docs.rs/outfit"><img src="https://docs.rs/outfit/badge.svg" alt="docs.rs"/></a>
+	<a href="Cargo.toml"><img src="https://img.shields.io/badge/rust-1.82%2B-orange.svg" alt="MSRV"/></a>
+</p>
+
+<!-- (Optional) Downloads badge once volume is meaningful
+<a href="https://pypistats.org/packages/pyOutfit"><img src="https://img.shields.io/pypi/dm/pyOutfit.svg" alt="Downloads"/></a>
 -->
 
 </div>

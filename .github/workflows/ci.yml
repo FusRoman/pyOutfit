@@ -15,7 +15,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         python-version: ["3.9", "3.10", "3.11", "3.12"]
-        features: ["" , "parallel"]
+        features: ["", "parallel"]
 
     env:
       CARGO_TERM_COLOR: always
@@ -44,36 +44,33 @@ jobs:
             .
           cache-on-failure: true
 
-      - name: Cache pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-${{ matrix.python-version }}-
-
-      - name: Upgrade pip & install test deps
+      - name: Create virtualenv (.venv)
         run: |
-          python -m pip install --upgrade pip wheel setuptools
-          pip install pytest pytest-cov maturin
+          python -m venv .venv
+          ./.venv/bin/python -V
 
+      - name: Upgrade pip & install test deps (in .venv)
+        run: |
+          ./.venv/bin/python -m pip install --upgrade pip wheel setuptools
+          ./.venv/bin/pip install pytest pytest-cov maturin
+
+      # Build & install en mode "develop" via le venv
       - name: Build and develop-install the extension (maturin)
-        # Utilise --features si matrix.features non vide
         run: |
           if [ -z "${BUILD_FEATURES}" ]; then
-            maturin develop --release
+            ./.venv/bin/maturin develop --release
           else
-            maturin develop --release --features "${BUILD_FEATURES}"
+            ./.venv/bin/maturin develop --release --features "${BUILD_FEATURES}"
           fi
 
       - name: Show installed package info
         run: |
-          python -c "import sys, pkgutil; print('Python:', sys.version)"
-          python -c "import importlib, pkgutil; import py_outfit as m; print('py_outfit:', getattr(m,'__version__', 'unknown')); print('from:', m.__file__)"
+          ./.venv/bin/python -c "import sys; print('Python:', sys.version)"
+          ./.venv/bin/python -c "import py_outfit as m; print('py_outfit:', getattr(m,'__version__','unknown')); print('from:', m.__file__)"
 
       - name: Run pytest
         run: |
-          pytest -q --maxfail=1 --disable-warnings -ra
+          ./.venv/bin/pytest -q --maxfail=1 --disable-warnings -ra
 
   lint:
     name: Rust lint (clippy & fmt)
