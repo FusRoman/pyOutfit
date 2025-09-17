@@ -33,17 +33,20 @@
 //! * [`observer::Observer`] – Observatory definition and lookup.
 pub mod iod_gauss;
 pub mod iod_params;
-pub mod observer;
-pub mod trajectories;
-pub mod orbit_type;
 pub mod observations;
+pub mod observer;
+pub mod orbit_type;
+pub mod trajectories;
 
 use outfit::Outfit;
 use pyo3::{exceptions::PyRuntimeError, prelude::*};
 
 use crate::{
     iod_gauss::GaussResult,
-    observer::Observer, orbit_type::{cometary::CometaryElements, equinoctial::EquinoctialElements, keplerian::KeplerianElements},
+    observer::Observer,
+    orbit_type::{
+        cometary::CometaryElements, equinoctial::EquinoctialElements, keplerian::KeplerianElements,
+    },
 };
 
 /// Map Rust `Result<T, OutfitError>` to `PyResult<T>`.

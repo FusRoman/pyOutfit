@@ -1,4 +1,4 @@
-use outfit::{KeplerianElements as RsKeplerian, EquinoctialElements as RsEquinoctial};
+use outfit::{EquinoctialElements as RsEquinoctial, KeplerianElements as RsKeplerian};
 
 use pyo3::{pyclass, pymethods};
 

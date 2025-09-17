@@ -5,7 +5,10 @@ use outfit::{
     KeplerianElements as RsKeplerian,
 };
 
-use crate::{orbit_type::{equinoctial::EquinoctialElements, keplerian::KeplerianElements}, IntoPyResult};
+use crate::{
+    orbit_type::{equinoctial::EquinoctialElements, keplerian::KeplerianElements},
+    IntoPyResult,
+};
 
 /// Python wrapper for Cometary elements.
 #[pyclass]
