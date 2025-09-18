@@ -6,6 +6,8 @@ use pyo3::{
     types::{PyIterator, PyList},
 };
 
+use outfit::observations::display::ObservationsDisplayExt;
+
 type ObsArrays<'py> = (
     Bound<'py, PyArray1<f64>>,
     Bound<'py, PyArray1<f64>>,
@@ -25,6 +27,225 @@ impl Observations {
     /// Human-friendly representation.
     fn __repr__(&self) -> String {
         format!("Trajectory(n_obs={})", self.inner.len())
+    }
+
+    /// Render a compact, fixed-width table as a Python string.
+    ///
+    /// Args:
+    ///     sorted (bool, optional): Sort rows by MJD(TT) ascending. Defaults to False.
+    ///     sec_prec (int, optional): Fractional digits for sexagesimal/ISO seconds. Defaults to 3.
+    ///
+    /// Returns:
+    ///     str: formatted table.
+    ///
+    /// Examples:
+    ///     >>> print(obs.show())
+    ///     >>> print(obs.show(sorted=True, sec_prec=4))
+    #[pyo3(text_signature = "($self, sorted=False, sec_prec=3)")]
+    pub fn show(&self, sorted: Option<bool>, sec_prec: Option<usize>) -> String {
+        let sorted = sorted.unwrap_or(false);
+        let sec_prec = sec_prec.unwrap_or(3);
+        // ObservationsDisplay (Default mode) + options
+        let disp = self.inner.show().with_seconds_precision(sec_prec);
+        if sorted {
+            format!("{}", disp.sorted())
+        } else {
+            format!("{}", disp)
+        }
+    }
+
+    /// Render a wide diagnostic table (uses comfy-table) as a Python string.
+    ///
+    /// Columns:
+    ///   `# | Site | MJD (TT) | JD (TT) | RA±σ[arcsec] | RA [rad] | DEC±σ[arcsec] | DEC [rad] | |r_geo| AU | |r_hel| AU`
+    ///
+    /// Args:
+    ///     sorted (bool, optional): Sort rows by MJD(TT) ascending. Defaults to False.
+    ///     sec_prec (int, optional): Fractional digits for sexagesimal seconds. Defaults to 3.
+    ///     dist_prec (int, optional): Fixed-point digits for AU distances. Defaults to 6.
+    ///
+    /// Returns:
+    ///     str: formatted table (Unicode box drawing via comfy-table).
+    ///
+    /// Examples:
+    ///     >>> print(obs.table_wide())
+    ///     >>> print(obs.table_wide(sorted=True, sec_prec=4, dist_prec=8))
+    #[pyo3(text_signature = "($self, sorted=False, sec_prec=3, dist_prec=6)")]
+    pub fn table_wide(
+        &self,
+        sorted: Option<bool>,
+        sec_prec: Option<usize>,
+        dist_prec: Option<usize>,
+    ) -> String {
+        let sorted = sorted.unwrap_or(false);
+        let sec_prec = sec_prec.unwrap_or(3);
+        let dist_prec = dist_prec.unwrap_or(6);
+
+        let disp = self
+            .inner
+            .table_wide()
+            .with_seconds_precision(sec_prec)
+            .with_distance_precision(dist_prec);
+        if sorted {
+            format!("{}", disp.sorted())
+        } else {
+            format!("{}", disp)
+        }
+    }
+
+    /// Render an ISO-centric table (uses comfy-table) as a Python string.
+    ///
+    /// Columns:
+    ///   `# | Site | ISO (TT) | ISO (UTC) | RA±σ[arcsec] | DEC±σ[arcsec]`
+    ///
+    /// Args:
+    ///     sorted (bool, optional): Sort rows by MJD(TT) ascending. Defaults to False.
+    ///     sec_prec (int, optional): Fractional digits for seconds (applied to ISO and sexagesimal). Defaults to 3.
+    ///
+    /// Returns:
+    ///     str: formatted table (Unicode box drawing via comfy-table).
+    ///
+    /// Examples:
+    ///     >>> print(obs.table_iso())
+    ///     >>> print(obs.table_iso(sorted=True, sec_prec=4))
+    #[pyo3(text_signature = "($self, sorted=False, sec_prec=3)")]
+    pub fn table_iso(&self, sorted: Option<bool>, sec_prec: Option<usize>) -> String {
+        let sorted = sorted.unwrap_or(false);
+        let sec_prec = sec_prec.unwrap_or(3);
+
+        let disp = self.inner.table_iso().with_seconds_precision(sec_prec);
+        if sorted {
+            format!("{}", disp.sorted())
+        } else {
+            format!("{}", disp)
+        }
+    }
+
+    /// Python-friendly string representation (same as `show()` with defaults).
+    fn __str__(&self) -> String {
+        // compact, unsorted, 3 fractional digits on seconds
+        self.show(None, None)
+    }
+
+    /// Render a compact table using the Outfit environment to resolve observer names.
+    ///
+    /// Columns:
+    ///   `# | Site | MJD (TT) | RA[hms] ±σ["] | DEC[dms] ±σ["]`
+    ///
+    /// Args:
+    ///     env (PyOutfit): Global environment (used to resolve site names).
+    ///     sorted (bool, optional): Sort rows by MJD(TT) ascending. Defaults to False.
+    ///     sec_prec (int, optional): Fractional digits for sexagesimal seconds. Defaults to 3.
+    ///
+    /// Returns:
+    ///     str: formatted table.
+    ///
+    /// Examples:
+    ///     >>> print(obs.show_with_env(env))
+    ///     >>> print(obs.show_with_env(env, sorted=True, sec_prec=4))
+    #[pyo3(text_signature = "($self, env, sorted=False, sec_prec=3)")]
+    pub fn show_with_env(
+        &self,
+        env: PyRef<'_, crate::PyOutfit>,
+        sorted: Option<bool>,
+        sec_prec: Option<usize>,
+    ) -> String {
+        let sorted = sorted.unwrap_or(false);
+        let sec_prec = sec_prec.unwrap_or(3);
+
+        let disp = self
+            .inner
+            .show()
+            .with_seconds_precision(sec_prec)
+            .with_env(&env.inner);
+
+        if sorted {
+            format!("{}", disp.sorted())
+        } else {
+            format!("{}", disp)
+        }
+    }
+
+    /// Render a wide diagnostic table (comfy-table) using the Outfit environment.
+    ///
+    /// Columns:
+    ///   `# | Site | MJD (TT) | JD (TT) | RA±σ[arcsec] | RA [rad] | DEC±σ[arcsec] | DEC [rad] | |r_geo| AU | |r_hel| AU`
+    ///
+    /// Args:
+    ///     env (PyOutfit): Global environment (used to resolve site names).
+    ///     sorted (bool, optional): Sort rows by MJD(TT) ascending. Defaults to False.
+    ///     sec_prec (int, optional): Fractional digits for sexagesimal seconds. Defaults to 3.
+    ///     dist_prec (int, optional): Fixed-point digits for AU distances. Defaults to 6.
+    ///
+    /// Returns:
+    ///     str: Unicode table (comfy-table).
+    ///
+    /// Examples:
+    ///     >>> print(obs.table_wide_with_env(env))
+    ///     >>> print(obs.table_wide_with_env(env, sorted=True, sec_prec=4, dist_prec=8))
+    #[pyo3(text_signature = "($self, env, sorted=False, sec_prec=3, dist_prec=6)")]
+    pub fn table_wide_with_env(
+        &self,
+        env: PyRef<'_, crate::PyOutfit>,
+        sorted: Option<bool>,
+        sec_prec: Option<usize>,
+        dist_prec: Option<usize>,
+    ) -> String {
+        let sorted = sorted.unwrap_or(false);
+        let sec_prec = sec_prec.unwrap_or(3);
+        let dist_prec = dist_prec.unwrap_or(6);
+
+        let disp = self
+            .inner
+            .table_wide()
+            .with_seconds_precision(sec_prec)
+            .with_distance_precision(dist_prec)
+            .with_env(&env.inner);
+
+        if sorted {
+            format!("{}", disp.sorted())
+        } else {
+            format!("{}", disp)
+        }
+    }
+
+    /// Render an ISO-centric table (comfy-table) using the Outfit environment.
+    ///
+    /// Columns:
+    ///   `# | Site | ISO (TT) | ISO (UTC) | RA±σ[arcsec] | DEC±σ[arcsec]`
+    ///
+    /// Args:
+    ///     env (PyOutfit): Global environment (used to resolve site names).
+    ///     sorted (bool, optional): Sort rows by MJD(TT) ascending. Defaults to False.
+    ///     sec_prec (int, optional): Fractional digits for seconds (ISO & sexagesimal). Defaults to 3.
+    ///
+    /// Returns:
+    ///     str: Unicode table (comfy-table).
+    ///
+    /// Examples:
+    ///     >>> print(obs.table_iso_with_env(env))
+    ///     >>> print(obs.table_iso_with_env(env, sorted=True, sec_prec=4))
+    #[pyo3(text_signature = "($self, env, sorted=False, sec_prec=3)")]
+    pub fn table_iso_with_env(
+        &self,
+        env: PyRef<'_, crate::PyOutfit>,
+        sorted: Option<bool>,
+        sec_prec: Option<usize>,
+    ) -> String {
+        let sorted = sorted.unwrap_or(false);
+        let sec_prec = sec_prec.unwrap_or(3);
+
+        let disp = self
+            .inner
+            .table_iso()
+            .with_seconds_precision(sec_prec)
+            .with_env(&env.inner);
+
+        if sorted {
+            format!("{}", disp.sorted())
+        } else {
+            format!("{}", disp)
+        }
     }
 
     /// Number of observations in this trajectory.

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any, Dict, Iterator, Optional, Tuple, Union
 
 import numpy as np
@@ -22,6 +23,8 @@ class TrajectorySet:
     ------------
     * `trajectory_set_from_numpy_radians` — Zero-copy ingestion from radians.
     * `trajectory_set_from_numpy_degrees` — Degree/arcsec ingestion with conversion.
+    * `new_from_mpc_80col` / `add_from_mpc_80col` — Read MPC 80-column files.
+    * `new_from_ades` / `add_from_ades` — Read ADES JSON/XML files.
     * `estimate_all_orbits` — Batch Gauss IOD over all trajectories.
     """
 
@@ -30,7 +33,9 @@ class TrajectorySet:
         """Return a concise, human-friendly representation."""
         ...
 
-        def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        """Number of trajectories (mapping length)."""
+        ...
 
     def __contains__(self, key: Key) -> bool:
         """
@@ -180,6 +185,7 @@ class TrajectorySet:
           `"No trajectories available."` if empty.
         """
         ...
+
     # --- Ingestion from NumPy ---
     @staticmethod
     def trajectory_set_from_numpy_radians(
@@ -259,6 +265,125 @@ class TrajectorySet:
         * `trajectory_set_from_numpy_radians` — Zero-copy variant for radian inputs.
         """
         ...
+
+    # --- Ingestion from files ---
+    @staticmethod
+    def new_from_mpc_80col(
+        pyoutfit: PyOutfit,
+        path: Union[str, Path],
+    ) -> "TrajectorySet":
+        """
+        Build a `TrajectorySet` from a **MPC 80-column** file.
+
+        Arguments
+        -----------------
+        * `pyoutfit`: Global environment (ephemerides, observers, error model).
+        * `path`: File path (`str` or Path from pathlib) to a MPC 80-column text file.
+
+        Return
+        ----------
+        * A new `TrajectorySet` populated from the file contents.
+
+        Notes
+        ----------
+        * Mirrors the Rust API semantics and may **panic** on parse errors.
+
+        See also
+        ------------
+        * `add_from_mpc_80col` — Append a second 80-column file into an existing set.
+        * `new_from_ades` — Create from ADES JSON/XML.
+        """
+        ...
+
+    def add_from_mpc_80col(
+        self,
+        pyoutfit: PyOutfit,
+        path: Union[str, Path],
+    ) -> None:
+        """
+        Append observations from a **MPC 80-column** file into this set.
+
+        Arguments
+        -----------------
+        * `pyoutfit`: Global environment (ephemerides, observers, error model).
+        * `path`: File path (`str` or Path from pathlib) to a MPC 80-column text file.
+
+        Return
+        ----------
+        * `None` — The internal map is updated in place.
+
+        Notes
+        ----------
+        * **No de-duplication** is performed; avoid ingesting the same file twice.
+
+        See also
+        ------------
+        * `new_from_mpc_80col` — Create a brand-new set from a single file.
+        """
+        ...
+
+    @staticmethod
+    def new_from_ades(
+        pyoutfit: PyOutfit,
+        path: Union[str, Path],
+        error_ra_arcsec: Optional[float],
+        error_dec_arcsec: Optional[float],
+    ) -> "TrajectorySet":
+        """
+        Build a `TrajectorySet` from an **ADES** file (JSON or XML).
+
+        Arguments
+        -----------------
+        * `pyoutfit`: Global environment (ephemerides, observers, error model).
+        * `path`: File path (`str` or Path from pathlib) to an ADES JSON/XML file.
+        * `error_ra_arcsec`: Optional global RA 1-σ (arcsec) if not specified per row.
+        * `error_dec_arcsec`: Optional global DEC 1-σ (arcsec) if not specified per row.
+
+        Return
+        ----------
+        * A new `TrajectorySet` populated from the ADES file.
+
+        Notes
+        ----------
+        * Error-handling policy follows the underlying parser (may log or panic).
+
+        See also
+        ------------
+        * `add_from_ades` — Append ADES observations into an existing set.
+        """
+        ...
+
+    def add_from_ades(
+        self,
+        pyoutfit: PyOutfit,
+        path: Union[str, Path],
+        error_ra_arcsec: Optional[float],
+        error_dec_arcsec: Optional[float],
+    ) -> None:
+        """
+        Append observations from an **ADES** file (JSON/XML) into this set.
+
+        Arguments
+        -----------------
+        * `pyoutfit`: Global environment (ephemerides, observers, error model).
+        * `path`: File path (`str` or Path from pathlib) to an ADES JSON/XML file.
+        * `error_ra_arcsec`: Optional global RA 1-σ (arcsec) if not specified per row.
+        * `error_dec_arcsec`: Optional global DEC 1-σ (arcsec) if not specified per row.
+
+        Return
+        ----------
+        * `None` — The internal map is updated in place.
+
+        Notes
+        ----------
+        * **No de-duplication** is performed; avoid re-ingesting the same file.
+
+        See also
+        ------------
+        * `new_from_ades` — Create a brand-new set from a single ADES file.
+        """
+        ...
+
     # --- Batch IOD ---
     def estimate_all_orbits(
         self,

@@ -1,13 +1,16 @@
 # tests/test_trajectory_set_from_numpy.py
 import math
+from typing import Tuple
 import numpy as np
 import pytest
 import py_outfit
 
-from py_outfit import GaussResult, KeplerianElements
+from py_outfit import GaussResult, KeplerianElements, TrajectorySet, PyOutfit, Observer
 
 
-def _build_arrays_degrees():
+def _build_arrays_degrees() -> (
+    Tuple[np.ndarray, np.ndarray, np.ndarray, float, float, np.ndarray]
+):
     """
     Build small, deterministic arrays in degrees and MJD(TT).
 
@@ -31,7 +34,9 @@ def _build_arrays_degrees():
     return trajectory_id, ra_deg, dec_deg, err_ra_arcsec, err_dec_arcsec, mjd_tt
 
 
-def _build_arrays_radians():
+def _build_arrays_radians() -> (
+    Tuple[np.ndarray, np.ndarray, np.ndarray, float, float, np.ndarray]
+):
     """
     Build arrays already in radians, with same pattern as degrees builder.
     """
@@ -44,7 +49,7 @@ def _build_arrays_radians():
     return tid, ra_rad, dec_rad, err_ra_rad, err_dec_rad, mjd
 
 
-def test_build_from_numpy_radians(pyoutfit_env, observer):
+def test_build_from_numpy_radians(pyoutfit_env: PyOutfit, observer: Observer):
     """
     Build a TrajectorySet using the zero-copy radians path.
 
@@ -81,7 +86,7 @@ def test_build_from_numpy_radians(pyoutfit_env, observer):
         assert len(s) > 0
 
 
-def test_build_from_numpy_degrees(pyoutfit_env, observer):
+def test_build_from_numpy_degrees(pyoutfit_env: PyOutfit, observer: Observer):
     """
     Build a TrajectorySet using the degrees+arcsec conversion path.
 
@@ -114,7 +119,7 @@ def test_build_from_numpy_degrees(pyoutfit_env, observer):
         assert len(s) > 0
 
 
-def test_length_mismatch_raises(pyoutfit_env, observer):
+def test_length_mismatch_raises(pyoutfit_env: PyOutfit, observer: Observer):
     """
     Provide mismatched array lengths and expect a ValueError.
     """
@@ -127,7 +132,7 @@ def test_length_mismatch_raises(pyoutfit_env, observer):
     err_dec_rad = np.deg2rad(0.5 / 3600.0)
 
     with pytest.raises(ValueError):
-        _ = py_outfit.TrajectorySet.trajectory_set_from_numpy_degrees(
+        _ = TrajectorySet.trajectory_set_from_numpy_degrees(
             pyoutfit_env,
             tid,
             ra,
@@ -161,7 +166,9 @@ def _assert_kepler_reasonable(
 
 
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-def test_iod_from_vec(pyoutfit_env, small_traj_set):
+def test_iod_from_vec(
+    pyoutfit_env: PyOutfit, small_traj_set: Tuple[TrajectorySet, dict]
+):
     """
     End-to-end Gauss IOD on a small synthetic tracklet set.
 
@@ -251,7 +258,8 @@ def test_iod_from_vec(pyoutfit_env, small_traj_set):
 # Tests for dict-like behavior
 # ----------------------------------------------------------------------
 
-def test_len_and_contains_and_getitem_types(small_traj_set):
+
+def test_len_and_contains_and_getitem_types(small_traj_set: Tuple[TrajectorySet, dict]):
     """Check __len__, __contains__ and that __getitem__ returns Observations."""
     (traj_set, counts) = small_traj_set
     import py_outfit as py_outfit
@@ -271,7 +279,7 @@ def test_len_and_contains_and_getitem_types(small_traj_set):
         assert isinstance(obs, py_outfit.Observations)
 
 
-def test_keys_values_items_roundtrip(small_traj_set):
+def test_keys_values_items_roundtrip(small_traj_set: Tuple[TrajectorySet, dict]):
     """Check keys/values/items consistency and lengths."""
     traj_set, counts = small_traj_set
     import py_outfit as py_outfit
@@ -297,7 +305,7 @@ def test_keys_values_items_roundtrip(small_traj_set):
         assert isinstance(v, py_outfit.Observations)
 
 
-def test_iter_over_keys_matches_keys_list(small_traj_set):
+def test_iter_over_keys_matches_keys_list(small_traj_set: Tuple[TrajectorySet, dict]):
     """__iter__ yields exactly the same set of keys as keys()."""
     traj_set, _ = small_traj_set
     keys_list = set(traj_set.keys())
@@ -305,7 +313,7 @@ def test_iter_over_keys_matches_keys_list(small_traj_set):
     assert keys_iter == keys_list
 
 
-def test_getitem_raises_keyerror_on_missing(small_traj_set):
+def test_getitem_raises_keyerror_on_missing(small_traj_set: Tuple[TrajectorySet, dict]):
     """Indexing with a missing key must raise KeyError."""
     traj_set, _ = small_traj_set
     with pytest.raises(KeyError):
@@ -316,7 +324,8 @@ def test_getitem_raises_keyerror_on_missing(small_traj_set):
 # Tests for Observations wrapper behavior
 # ----------------------------------------------------------------------
 
-def test_observations_len_and_indexing(small_traj_set):
+
+def test_observations_len_and_indexing(small_traj_set: Tuple[TrajectorySet, dict]):
     """Check Observations.__len__ and __getitem__ (including negative index)."""
     traj_set, counts = small_traj_set
 
@@ -340,7 +349,7 @@ def test_observations_len_and_indexing(small_traj_set):
             _ = obs[-(expected_n + 1)]
 
 
-def test_observations_iter_and_to_list(small_traj_set):
+def test_observations_iter_and_to_list(small_traj_set: Tuple[TrajectorySet, dict]):
     """Iterating Observations yields same number of rows as to_list()."""
     traj_set, counts = small_traj_set
 
@@ -360,7 +369,9 @@ def test_observations_iter_and_to_list(small_traj_set):
             assert all(isinstance(x, float) for x in r0)
 
 
-def test_observations_to_numpy_shapes_and_dtypes(small_traj_set):
+def test_observations_to_numpy_shapes_and_dtypes(
+    small_traj_set: Tuple[TrajectorySet, dict],
+):
     """to_numpy returns 5 float64 1D arrays with consistent lengths."""
     traj_set, counts = small_traj_set
 

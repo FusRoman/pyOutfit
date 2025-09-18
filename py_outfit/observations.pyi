@@ -4,35 +4,38 @@ from __future__ import annotations
 from typing import Iterator
 import numpy as np
 
+from py_outfit.py_outfit import PyOutfit
+
 class Observations:
     """
     Read-only Python view over a single trajectory (list of astrometric observations).
 
-    See also
-    ------------
-    * `TrajectorySet` – Mapping from object key to observation lists.
-    * `to_numpy` – Export RA/DEC/MJD and uncertainties to NumPy arrays.
+    Highlights
+    ----------
+    - Vector exports: `to_numpy()` and `to_list()`
+    - Row access / iteration: `__getitem__`, `__iter__`
+    - Pretty display helpers:
+        * `show(...)` – compact, fixed-width table
+        * `table_wide(...)` – diagnostic table with JD, radians, distances (AU)
+        * `table_iso(...)` – timestamp-centric (ISO TT / ISO UTC)
+        * `*_with_env(env, ...)` – same as above, but resolves observer names using `PyOutfit`
     """
 
     def __repr__(self) -> str: ...
+    def __str__(self) -> str: ...
     def __len__(self) -> int: ...
+
+    # -------------------------
+    # Iteration / random access
+    # -------------------------
     def __iter__(self) -> Iterator[tuple[float, float, float, float, float]]:
         """
         Iterate observations as tuples.
 
-        Arguments
-        -----------------
-        * *(none)* – Iterator over stored observations.
-
-        Return
-        ----------
-        * An `Iterator[tuple[float, float, float, float, float]]` yielding:
-          `(mjd_tt, ra_rad, dec_rad, sigma_ra, sigma_dec)`.
-
-        See also
-        ------------
-        * `to_list` – Materialize the whole sequence as a Python list.
-        * `to_numpy` – Export column arrays as NumPy ndarrays.
+        Returns
+        -------
+        Iterator[tuple[float, float, float, float, float]]
+            Yields `(mjd_tt, ra_rad, dec_rad, sigma_ra, sigma_dec)`.
         """
         ...
 
@@ -40,42 +43,36 @@ class Observations:
         """
         Random access to an observation.
 
-        Arguments
-        -----------------
-        * `idx`: Zero-based index (supports negative indexing).
-
-        Return
+        Parameters
         ----------
-        * A 5-tuple `(mjd_tt, ra_rad, dec_rad, sigma_ra, sigma_dec)`.
+        idx : int
+            Zero-based index (negative indexing supported).
+
+        Returns
+        -------
+        tuple[float, float, float, float, float]
+            `(mjd_tt, ra_rad, dec_rad, sigma_ra, sigma_dec)`.
 
         Raises
-        ----------
-        * `IndexError` if `idx` is out of range.
-
-        See also
-        ------------
-        * `__iter__` – Row-wise iteration.
-        * `to_numpy` – Vectorized export.
+        ------
+        IndexError
+            If `idx` is out of range.
         """
         ...
-
-    def to_numpy(self) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    # ---------------
+    # Columnar export
+    # ---------------
+    def to_numpy(
+        self,
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """
         Export arrays to NumPy (rad / days).
 
-        Arguments
-        -----------------
-        * *(none)* – Accessor method.
-
-        Return
-        ----------
-        * A tuple of five `np.ndarray` with dtype `float64` and shape `(N,)`:
-          `(mjd_tt, ra_rad, dec_rad, sigma_ra, sigma_dec)`.
-
-        See also
-        ------------
-        * `__iter__` – Iterate row by row instead of exporting full arrays.
-        * `to_list` – Export as a list of Python tuples.
+        Returns
+        -------
+        tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+            Five 1D arrays of dtype float64:
+            `(mjd_tt, ra_rad, dec_rad, sigma_ra, sigma_dec)`.
         """
         ...
 
@@ -83,18 +80,158 @@ class Observations:
         """
         Return a Python list of observation tuples.
 
-        Arguments
-        -----------------
-        * *(none)* – Accessor method.
+        Returns
+        -------
+        list[tuple[float, float, float, float, float]]
+            Each tuple is `(mjd_tt, ra_rad, dec_rad, sigma_ra, sigma_dec)`.
+        """
+        ...
+    # -----------------
+    # Display (compact)
+    # -----------------
+    def show(self, *, sorted: bool = False, sec_prec: int = 3) -> str:
+        """
+        Render a compact, fixed-width table.
 
-        Return
+        Parameters
         ----------
-        * `list[tuple[float, float, float, float, float]]` where each tuple is
-          `(mjd_tt, ra_rad, dec_rad, sigma_ra, sigma_dec)`.
+        sorted : bool, optional
+            Sort rows by MJD(TT) ascending (default: False).
+        sec_prec : int, optional
+            Fractional digits for sexagesimal seconds (default: 3).
 
-        See also
-        ------------
-        * `__iter__` – Lazy iteration.
-        * `to_numpy` – Columnar export as NumPy arrays.
+        Returns
+        -------
+        str
+            Formatted table.
+        """
+        ...
+
+    def show_with_env(
+        self, env: PyOutfit, *, sorted: bool = False, sec_prec: int = 3
+    ) -> str:
+        """
+        Compact table, resolving observer names via `env`.
+
+        Parameters
+        ----------
+        env : PyOutfit
+            Global environment used to resolve site names.
+        sorted : bool, optional
+            Sort rows by MJD(TT) ascending (default: False).
+        sec_prec : int, optional
+            Fractional digits for sexagesimal seconds (default: 3).
+
+        Returns
+        -------
+        str
+            Formatted table (with site names when available).
+        """
+        ...
+    # --------------
+    # Display (wide)
+    # --------------
+    def table_wide(
+        self, *, sorted: bool = False, sec_prec: int = 3, dist_prec: int = 6
+    ) -> str:
+        """
+        Diagnostic table (Unicode) with JD, radians, and AU distances.
+
+        Columns
+        -------
+        `# | Site | MJD (TT) | JD (TT) | RA±σ[arcsec] | RA [rad] | DEC±σ[arcsec] | DEC [rad] | |r_geo| AU | |r_hel| AU`
+
+        Parameters
+        ----------
+        sorted : bool, optional
+            Sort rows by MJD(TT) ascending (default: False).
+        sec_prec : int, optional
+            Fractional digits for sexagesimal seconds (default: 3).
+        dist_prec : int, optional
+            Fixed-point digits for AU distances (default: 6).
+
+        Returns
+        -------
+        str
+            Unicode table (box drawing).
+        """
+        ...
+
+    def table_wide_with_env(
+        self,
+        env: PyOutfit,
+        *,
+        sorted: bool = False,
+        sec_prec: int = 3,
+        dist_prec: int = 6,
+    ) -> str:
+        """
+        Diagnostic table (Unicode) using `env` to resolve observer names.
+
+        See `table_wide` for columns and knobs.
+
+        Parameters
+        ----------
+        env : PyOutfit
+            Global environment used to resolve site names.
+        sorted : bool, optional
+            Sort rows by MJD(TT) ascending (default: False).
+        sec_prec : int, optional
+            Fractional digits for sexagesimal seconds (default: 3).
+        dist_prec : int, optional
+            Fixed-point digits for AU distances (default: 6).
+
+        Returns
+        -------
+        str
+            Unicode table (box drawing).
+        """
+        ...
+    # -------------
+    # Display (ISO)
+    # -------------
+    def table_iso(self, *, sorted: bool = False, sec_prec: int = 3) -> str:
+        """
+        ISO-centric table (Unicode) with TT & UTC timestamps.
+
+        Columns
+        -------
+        `# | Site | ISO (TT) | ISO (UTC) | RA±σ[arcsec] | DEC±σ[arcsec]`
+
+        Parameters
+        ----------
+        sorted : bool, optional
+            Sort rows by MJD(TT) ascending (default: False).
+        sec_prec : int, optional
+            Fractional digits for seconds (applied to ISO & sexagesimal, default: 3).
+
+        Returns
+        -------
+        str
+            Unicode table (box drawing).
+        """
+        ...
+
+    def table_iso_with_env(
+        self, env: PyOutfit, *, sorted: bool = False, sec_prec: int = 3
+    ) -> str:
+        """
+        ISO-centric table (Unicode) using `env` to resolve observer names.
+
+        See `table_iso` for columns and knobs.
+
+        Parameters
+        ----------
+        env : PyOutfit
+            Global environment used to resolve site names.
+        sorted : bool, optional
+            Sort rows by MJD(TT) ascending (default: False).
+        sec_prec : int, optional
+            Fractional digits for seconds (applied to ISO & sexagesimal, default: 3).
+
+        Returns
+        -------
+        str
+            Unicode table (box drawing).
         """
         ...

@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use camino::Utf8PathBuf;
 use numpy::PyReadonlyArray1;
 use outfit::{
     trajectories::{
@@ -132,6 +133,132 @@ impl TrajectorySet {
         } else {
             "No trajectories available.".to_string()
         }
+    }
+
+    /// Build a `TrajectorySet` by reading a **MPC 80-column** file.
+    ///
+    /// This mirrors `TrajectoryFile::new_from_80col`. Internally it delegates parsing
+    /// and observation construction to the Rust implementation.
+    ///
+    /// Arguments
+    /// -----------------
+    /// * `env` – Global Outfit state (ephemerides, observers/EOP registry).
+    /// * `path` – File path (`str` or `pathlib.Path`) to a MPC 80-column text file.
+    ///
+    /// Return
+    /// ----------
+    /// * A new `PyTrajectorySet` populated from the file.
+    ///
+    /// Notes
+    /// ----------
+    /// * This call may **panic** on parse errors (same semantics as the Rust API).
+    #[staticmethod]
+    pub fn new_from_mpc_80col(
+        py: Python<'_>,
+        env: &mut PyOutfit,
+        path: &Bound<'_, PyAny>,
+    ) -> PyResult<TrajectorySet> {
+        let p = py_path_to_utf8(py, path)?;
+        let ts = py.detach(|| outfit::TrajectorySet::new_from_80col(&mut env.inner, &p));
+        Ok(TrajectorySet { inner: ts })
+    }
+
+    /// Append observations from a **MPC 80-column** file into this set.
+    ///
+    /// This mirrors `TrajectoryFile::add_from_80col`.
+    ///
+    /// Arguments
+    /// -----------------
+    /// * `env` – Global Outfit state (ephemerides, observers/EOP registry).
+    /// * `path` – File path (`str` or `pathlib.Path`) to a MPC 80-column text file.
+    ///
+    /// Return
+    /// ----------
+    /// * `None`. The internal map is updated in place.
+    ///
+    /// Notes
+    /// ----------
+    /// * **No de-duplication** is performed; do not ingest the same file twice if duplicates are undesirable.
+    /// * This call may **panic** on parse errors (same semantics as the Rust API).
+    pub fn add_from_mpc_80col(
+        &mut self,
+        py: Python<'_>,
+        env: &mut PyOutfit,
+        path: &Bound<'_, PyAny>,
+    ) -> PyResult<()> {
+        let p = py_path_to_utf8(py, path)?;
+        py.detach(|| self.inner.add_from_80col(&mut env.inner, &p));
+        Ok(())
+    }
+
+    /// Build a `TrajectorySet` by reading an **ADES** file (MPC XML/JSON).
+    ///
+    /// Arguments
+    /// -----------------
+    /// * `env` – Global Outfit state (ephemerides, observers/EOP registry).
+    /// * `path` – ADES file path (`str` or `pathlib.Path`).
+    /// * `error_ra_arcsec` – Optional 1-σ RA uncertainty applied to all rows without explicit σ.
+    /// * `error_dec_arcsec` – Optional 1-σ DEC uncertainty applied to all rows without explicit σ.
+    ///
+    /// Return
+    /// ----------
+    /// * A new `PyTrajectorySet` populated from the ADES file.
+    ///
+    /// Notes
+    /// ----------
+    /// * The underlying parser defines the error-handling policy (it may log or panic on invalid data).
+    /// * **No de-duplication** is performed across multiple ingestions.
+    #[staticmethod]
+    pub fn new_from_ades(
+        py: Python<'_>,
+        env: &mut PyOutfit,
+        path: &Bound<'_, PyAny>,
+        error_ra_arcsec: Option<f64>,
+        error_dec_arcsec: Option<f64>,
+    ) -> PyResult<TrajectorySet> {
+        let p = py_path_to_utf8(py, path)?;
+        let ts = py.detach(|| {
+            outfit::TrajectorySet::new_from_ades(
+                &mut env.inner,
+                &p,
+                error_ra_arcsec,
+                error_dec_arcsec,
+            )
+        });
+        Ok(TrajectorySet { inner: ts })
+    }
+
+    /// Append observations from an **ADES** file (MPC XML/JSON) into this set.
+    ///
+    /// Arguments
+    /// -----------------
+    /// * `env` – Global Outfit state (ephemerides, observers/EOP registry).
+    /// * `path` – ADES file path (`str` or `pathlib.Path`).
+    /// * `error_ra_arcsec` – Optional 1-σ RA uncertainty applied to all rows without explicit σ.
+    /// * `error_dec_arcsec` – Optional 1-σ DEC uncertainty applied to all rows without explicit σ.
+    ///
+    /// Return
+    /// ----------
+    /// * `None`. The internal map is updated in place.
+    ///
+    /// Notes
+    /// ----------
+    /// * The underlying parser defines the error-handling policy (it may log or panic on invalid data).
+    /// * **No de-duplication** is performed; avoid re-ingesting the same file twice.
+    pub fn add_from_ades(
+        &mut self,
+        py: Python<'_>,
+        env: &mut PyOutfit,
+        path: &Bound<'_, PyAny>,
+        error_ra_arcsec: Option<f64>,
+        error_dec_arcsec: Option<f64>,
+    ) -> PyResult<()> {
+        let p = py_path_to_utf8(py, path)?;
+        py.detach(|| {
+            self.inner
+                .add_from_ades(&mut env.inner, &p, error_ra_arcsec, error_dec_arcsec)
+        });
+        Ok(())
     }
 
     /// Build a `TrajectorySet` from NumPy arrays already expressed in **radians** and **MJD (TT)**.
@@ -399,4 +526,15 @@ fn py_to_object_number(key: &Bound<'_, PyAny>) -> PyResult<ObjectNumber> {
     Err(PyValueError::new_err(
         "Unsupported key type: expected int or str",
     ))
+}
+
+/// Convert a Python path-like (str or pathlib.Path) to Utf8PathBuf.
+///
+/// This calls `os.fspath(obj)` to be fully path-protocol compliant.
+fn py_path_to_utf8(py: Python<'_>, pathlike: &Bound<'_, PyAny>) -> PyResult<Utf8PathBuf> {
+    let os = py.import("os")?;
+    let fspath = os.getattr("fspath")?;
+    let s: String = fspath.call1((pathlike,))?.extract()?;
+    Utf8PathBuf::from_path_buf(std::path::PathBuf::from(s))
+        .map_err(|_| PyValueError::new_err("Path is not valid UTF-8"))
 }

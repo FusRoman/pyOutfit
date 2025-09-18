@@ -2,10 +2,15 @@ from collections import Counter
 import numpy as np
 from astropy.time import Time
 import pytest
+from typing import Iterator, Tuple
+
+from py_outfit import PyOutfit
+from py_outfit import Observer
+from py_outfit import TrajectorySet
 
 
 @pytest.fixture
-def pyoutfit_env():
+def pyoutfit_env() -> Iterator[PyOutfit]:
     """
     Fixture that provides a fresh PyOutfit environment for each test.
     """
@@ -17,7 +22,7 @@ def pyoutfit_env():
 
 
 @pytest.fixture
-def observer():
+def observer() -> Observer:
     """
     Fixture that provides a standard observer for tests.
     """
@@ -35,7 +40,7 @@ def observer():
 
 
 @pytest.fixture
-def ZTF_observatory():
+def ZTF_observatory() -> Observer:
     """
     Fixture that provides a standard observer for tests.
     """
@@ -53,7 +58,7 @@ def ZTF_observatory():
 
 
 @pytest.fixture
-def pyoutfit_env_with_observer(pyoutfit_env, observer):
+def pyoutfit_env_with_observer(pyoutfit_env: PyOutfit, observer: Observer):
     """
     Fixture that provides a PyOutfit environment with a standard observer added.
     """
@@ -67,7 +72,7 @@ def pyoutfit_env_with_observer(pyoutfit_env, observer):
 
 
 @pytest.fixture
-def small_traj_set(pyoutfit_env, ZTF_observatory):
+def small_traj_set(pyoutfit_env: PyOutfit, ZTF_observatory: Observer) -> Tuple[TrajectorySet, Counter]:
     """
     Build a small TrajectorySet from synthetic observations (degrees + arcsec).
     """
