@@ -1,14 +1,71 @@
 # py_outfit.pyi
 from __future__ import annotations
 
-from py_outfit.iod_params import IODParams
-from py_outfit.iod_gauss import GaussResult
-from py_outfit.observer import Observer
-from py_outfit.orbit_type.cometary import CometaryElements
-from py_outfit.orbit_type.equinoctial import EquinoctialElements
-from py_outfit.orbit_type.keplerian import KeplerianElements
-from py_outfit.trajectories import TrajectorySet
-from py_outfit.observations import Observations
+from .iod_params import IODParams
+from .iod_gauss import GaussResult
+from .observer import Observer
+from .orbit_type.cometary import CometaryElements
+from .orbit_type.equinoctial import EquinoctialElements
+from .orbit_type.keplerian import KeplerianElements
+from .trajectories import TrajectorySet
+from .observations import Observations
+
+"""
+Physical and astronomical constants exposed by Outfit.
+
+These values are provided in SI units or astronomical conventions
+"""
+
+DPI: float
+"""2π, useful for trigonometric conversions (radians)."""
+
+SECONDS_PER_DAY: float
+"""Number of seconds in a Julian day (86,400)."""
+
+AU: float
+"""Astronomical Unit in kilometers."""
+
+EPS: float
+"""Numerical epsilon used for floating-point comparisons (1e-6)."""
+
+T2000: float
+"""MJD epoch of J2000.0 (2000-01-01 12:00:00 TT = 51544.5)."""
+
+JDTOMJD: float
+"""Conversion constant between Julian Date and Modified Julian Date (2400000.5)."""
+
+RADEG: float
+"""Degrees → radians conversion factor."""
+
+RADSEC: float
+"""Arcseconds → radians conversion factor."""
+
+RAD2ARC: float
+"""Radians → arcseconds conversion factor."""
+
+RADH: float
+"""Hours → radians conversion factor (2π / 24)."""
+
+EARTH_MAJOR_AXIS: float
+"""Earth equatorial radius in meters (GRS1980/WGS84)."""
+
+EARTH_MINOR_AXIS: float
+"""Earth polar radius in meters (GRS1980/WGS84)."""
+
+ERAU: float
+"""Earth equatorial radius expressed in astronomical units."""
+
+GAUSS_GRAV: float
+"""Gaussian gravitational constant k, used in classical orbit dynamics."""
+
+GAUSS_GRAV_SQUARED: float
+"""Square of Gaussian gravitational constant (k²)."""
+
+VLIGHT: float
+"""Speed of light in km/s."""
+
+VLIGHT_AU: float
+"""Speed of light in astronomical units per day."""
 
 __all__ = [
     "PyOutfit",
@@ -20,6 +77,23 @@ __all__ = [
     "EquinoctialElements",
     "CometaryElements",
     "Observations",
+    "DPI",
+    "SECONDS_PER_DAY",
+    "AU",
+    "EPS",
+    "T2000",
+    "JDTOMJD",
+    "RADEG",
+    "RADSEC",
+    "RAD2ARC",
+    "RADH",
+    "EARTH_MAJOR_AXIS",
+    "EARTH_MINOR_AXIS",
+    "ERAU",
+    "GAUSS_GRAV",
+    "GAUSS_GRAV_SQUARED",
+    "VLIGHT",
+    "VLIGHT_AU",
 ]
 
 class PyOutfit:

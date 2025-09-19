@@ -107,6 +107,7 @@
 //! except RuntimeError as exc:
 //!     print("Failed to initialize environment:", exc)
 //! ```
+pub mod constants;
 pub mod iod_gauss;
 pub mod iod_params;
 pub mod observations;
@@ -293,6 +294,9 @@ fn py_outfit(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<KeplerianElements>()?;
     m.add_class::<EquinoctialElements>()?;
     m.add_class::<CometaryElements>()?;
+
+    // Constants (2π, AU, Gaussian k, etc.).
+    constants::register_constants(m)?;
 
     Ok(())
 }

@@ -13,6 +13,7 @@ from py_outfit.observer import Observer
 from py_outfit.py_outfit import PyOutfit
 
 Key = Union[int, str]
+PathLike = Union[str, Path]
 
 class TrajectorySet:
     """
@@ -270,7 +271,7 @@ class TrajectorySet:
     @staticmethod
     def new_from_mpc_80col(
         pyoutfit: PyOutfit,
-        path: Union[str, Path],
+        path: PathLike,
     ) -> "TrajectorySet":
         """
         Build a `TrajectorySet` from a **MPC 80-column** file.
@@ -298,7 +299,7 @@ class TrajectorySet:
     def add_from_mpc_80col(
         self,
         pyoutfit: PyOutfit,
-        path: Union[str, Path],
+        path: PathLike,
     ) -> None:
         """
         Append observations from a **MPC 80-column** file into this set.
@@ -325,7 +326,7 @@ class TrajectorySet:
     @staticmethod
     def new_from_ades(
         pyoutfit: PyOutfit,
-        path: Union[str, Path],
+        path: PathLike,
         error_ra_arcsec: Optional[float],
         error_dec_arcsec: Optional[float],
     ) -> "TrajectorySet":
@@ -356,7 +357,7 @@ class TrajectorySet:
     def add_from_ades(
         self,
         pyoutfit: PyOutfit,
-        path: Union[str, Path],
+        path: PathLike,
         error_ra_arcsec: Optional[float],
         error_dec_arcsec: Optional[float],
     ) -> None:

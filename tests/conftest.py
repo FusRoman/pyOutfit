@@ -1,6 +1,7 @@
 from collections import Counter
 import numpy as np
 from astropy.time import Time
+import pandas as pd
 import pytest
 from typing import Iterator, Tuple
 
@@ -72,10 +73,16 @@ def pyoutfit_env_with_observer(pyoutfit_env: PyOutfit, observer: Observer):
 
 
 @pytest.fixture
-def small_traj_set(pyoutfit_env: PyOutfit, ZTF_observatory: Observer) -> Tuple[TrajectorySet, Counter]:
+def traj_data():
     """
-    Build a small TrajectorySet from synthetic observations (degrees + arcsec).
+    Provide synthetic trajectory data as numpy arrays.
+    Returns:
+        tid: np.ndarray of trajectory IDs (uint32)
+        ra_deg: np.ndarray of RA in degrees (float64)
+        dec_deg: np.ndarray of DEC in degrees (float64)
+        mjd_tt: np.ndarray of epochs in MJD TT (float64)
     """
+
     tid = np.array(
         [0, 1, 2, 1, 2, 1, 0, 0, 0, 1, 2, 1, 1, 0, 2, 2, 0, 2, 2],
         dtype=np.uint32,
@@ -160,6 +167,21 @@ def small_traj_set(pyoutfit_env: PyOutfit, ZTF_observatory: Observer) -> Tuple[T
     t_utc = Time(jd_utc, format="jd", scale="utc")
     mjd_tt = t_utc.tt.mjd.astype(np.float64)
 
+    return tid, ra_deg, dec_deg, mjd_tt
+
+
+@pytest.fixture
+def small_traj_set(
+    pyoutfit_env: PyOutfit,
+    ZTF_observatory: Observer,
+    traj_data: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+) -> Tuple[TrajectorySet, Counter]:
+    """
+    Build a small TrajectorySet from synthetic observations (degrees + arcsec).
+    """
+
+    tid, ra_deg, dec_deg, mjd_tt = traj_data
+
     # Build TrajectorySet from numpy buffers (degrees input)
     import py_outfit as py_outfit
 
@@ -176,3 +198,29 @@ def small_traj_set(pyoutfit_env: PyOutfit, ZTF_observatory: Observer) -> Tuple[T
 
     # Return both the set and the counts per key (for assertions below)
     return traj_set, Counter(tid.tolist())
+
+
+@pytest.fixture
+def pandas_traj(
+    traj_data: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+) -> pd.DataFrame:
+    """
+    Provide synthetic trajectory data as a pandas DataFrame.
+    Returns:
+        pd.DataFrame with columns: tid (uint32), ra (float64), dec (float64), mjd (float64)
+    """
+    import pandas as pd
+
+    tid, ra_deg, dec_deg, mjd_tt = traj_data
+
+    df = pd.DataFrame(
+        {
+            "tid": tid,
+            "ra": ra_deg,
+            "dec": dec_deg,
+            "mjd": mjd_tt,
+            "sra": np.full_like(ra_deg, 0.5),  # arcsec
+            "sdec": np.full_like(dec_deg, 0.5),  # arcsec
+        }
+    )
+    return df

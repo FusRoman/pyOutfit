@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Iterator
 import numpy as np
+from numpy.typing import NDArray
 
 from py_outfit.py_outfit import PyOutfit
 
@@ -64,7 +65,7 @@ class Observations:
     # ---------------
     def to_numpy(
         self,
-    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    ) -> tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
         """
         Export arrays to NumPy (rad / days).
 

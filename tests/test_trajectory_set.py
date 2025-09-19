@@ -61,8 +61,8 @@ def test_build_from_numpy_radians(pyoutfit_env: PyOutfit, observer: Observer):
     tid, ra_rad, dec_rad, err_ra_rad, err_dec_rad, mjd = _build_arrays_radians()
 
     ts = py_outfit.TrajectorySet.from_numpy_radians(
-        pyoutfit_env,  # &mut PyOutfit
-        tid,  # np.uint32[...]
+        pyoutfit_env,
+        tid,
         ra_rad.astype(np.float64),
         dec_rad.astype(np.float64),
         float(err_ra_rad),
