@@ -1,4 +1,3 @@
-# tests/test_trajectory_set_from_numpy.py
 import math
 from typing import Tuple
 import numpy as np
@@ -61,7 +60,7 @@ def test_build_from_numpy_radians(pyoutfit_env: PyOutfit, observer: Observer):
     # Inputs in radians
     tid, ra_rad, dec_rad, err_ra_rad, err_dec_rad, mjd = _build_arrays_radians()
 
-    ts = py_outfit.TrajectorySet.trajectory_set_from_numpy_radians(
+    ts = py_outfit.TrajectorySet.from_numpy_radians(
         pyoutfit_env,  # &mut PyOutfit
         tid,  # np.uint32[...]
         ra_rad.astype(np.float64),
@@ -97,7 +96,7 @@ def test_build_from_numpy_degrees(pyoutfit_env: PyOutfit, observer: Observer):
     """
     tid, ra_deg, dec_deg, err_ra_arcsec, err_dec_arcsec, mjd = _build_arrays_degrees()
 
-    ts = py_outfit.TrajectorySet.trajectory_set_from_numpy_degrees(
+    ts = py_outfit.TrajectorySet.from_numpy_degrees(
         pyoutfit_env,  # &mut PyOutfit
         tid,  # np.uint32[...]
         ra_deg.astype(np.float64),
@@ -132,7 +131,7 @@ def test_length_mismatch_raises(pyoutfit_env: PyOutfit, observer: Observer):
     err_dec_rad = np.deg2rad(0.5 / 3600.0)
 
     with pytest.raises(ValueError):
-        _ = TrajectorySet.trajectory_set_from_numpy_degrees(
+        _ = TrajectorySet.from_numpy_degrees(
             pyoutfit_env,
             tid,
             ra,

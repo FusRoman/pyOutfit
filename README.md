@@ -120,7 +120,7 @@ dec_deg       = np.array([ 5.0, 5.01, 5.015, -10.0,-10.02,-10.03])  # degrees
 times_mjd_tt  = np.array([60000.0,60000.01,60000.03, 60000.0,60000.02,60000.05])
 
 # 4. Build trajectory set (degree ingestion path auto-converts to radians)
-ts = TrajectorySet.trajectory_set_from_numpy_degrees(
+ts = TrajectorySet.from_numpy_degrees(
 	env,
 	trajectory_id,
 	ra_deg,

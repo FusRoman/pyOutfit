@@ -17,6 +17,10 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 
+[project.optional-dependencies]
+examples = [
+    "matplotlib>=3.10.6",
+]
 [tool.pdm]
 distribution = false
 

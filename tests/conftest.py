@@ -163,7 +163,7 @@ def small_traj_set(pyoutfit_env: PyOutfit, ZTF_observatory: Observer) -> Tuple[T
     # Build TrajectorySet from numpy buffers (degrees input)
     import py_outfit as py_outfit
 
-    traj_set = py_outfit.TrajectorySet.trajectory_set_from_numpy_degrees(
+    traj_set = py_outfit.TrajectorySet.from_numpy_degrees(
         pyoutfit_env,
         tid,
         ra_deg,

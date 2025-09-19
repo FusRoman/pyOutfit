@@ -34,7 +34,7 @@
 //! ztf = env.get_observer_from_mpc_code("I41")
 //!
 //! # 3. (Synthetic) build a TrajectorySet from NumPy arrays (see README for full example)
-//! # ts = TrajectorySet.trajectory_set_from_numpy_degrees(...)
+//! # ts = TrajectorySet.from_numpy_degrees(...)
 //!
 //! # 4. IOD parameters (defaults + custom triplet cap)
 //! params = (IODParams.builder()

@@ -286,10 +286,10 @@ impl TrajectorySet {
     ///
     /// See also
     /// ----------
-    /// * [`Self::trajectory_set_from_numpy_degrees`] – Degrees/arcsec variant with conversions.
+    /// * [`Self::from_numpy_degrees`] – Degrees/arcsec variant with conversions.
     #[allow(clippy::too_many_arguments)]
     #[staticmethod]
-    pub fn trajectory_set_from_numpy_radians(
+    pub fn from_numpy_radians(
         py: Python<'_>,
         pyoutfit: &mut PyOutfit,
         trajectory_id: PyReadonlyArray1<u32>,
@@ -363,10 +363,10 @@ impl TrajectorySet {
     ///
     /// See also
     /// ------------
-    /// * [`Self::trajectory_set_from_numpy_radians`] – Zero-copy variant for radian inputs.
+    /// * [`Self::from_numpy_radians`] – Zero-copy variant for radian inputs.
     #[allow(clippy::too_many_arguments)]
     #[staticmethod]
-    pub fn trajectory_set_from_numpy_degrees(
+    pub fn from_numpy_degrees(
         py: Python<'_>,
         pyoutfit: &mut PyOutfit,
         trajectory_id: PyReadonlyArray1<u32>,
@@ -430,8 +430,8 @@ impl TrajectorySet {
     ///
     /// See also
     /// ------------
-    /// * [`TrajectorySet::trajectory_set_from_numpy_radians`] – Build set from radian inputs.
-    /// * [`TrajectorySet::trajectory_set_from_numpy_degrees`] – Build set with degree→radian conversion.
+    /// * [`TrajectorySet::from_numpy_radians`] – Build set from radian inputs.
+    /// * [`TrajectorySet::from_numpy_degrees`] – Build set with degree→radian conversion.
     /// * [`IODParams`] – Initial orbit determination configuration.
     /// * [`GaussResult`] – Result wrapper for the Gauss IOD.
     pub fn estimate_all_orbits(

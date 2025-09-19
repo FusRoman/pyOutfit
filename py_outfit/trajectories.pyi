@@ -21,8 +21,8 @@ class TrajectorySet:
 
     See also
     ------------
-    * `trajectory_set_from_numpy_radians` — Zero-copy ingestion from radians.
-    * `trajectory_set_from_numpy_degrees` — Degree/arcsec ingestion with conversion.
+    * `from_numpy_radians` — Zero-copy ingestion from radians.
+    * `from_numpy_degrees` — Degree/arcsec ingestion with conversion.
     * `new_from_mpc_80col` / `add_from_mpc_80col` — Read MPC 80-column files.
     * `new_from_ades` / `add_from_ades` — Read ADES JSON/XML files.
     * `estimate_all_orbits` — Batch Gauss IOD over all trajectories.
@@ -188,7 +188,7 @@ class TrajectorySet:
 
     # --- Ingestion from NumPy ---
     @staticmethod
-    def trajectory_set_from_numpy_radians(
+    def from_numpy_radians(
         pyoutfit: PyOutfit,
         trajectory_id: NDArray[np.uint32],
         ra: NDArray[np.float64],
@@ -225,7 +225,7 @@ class TrajectorySet:
         ...
 
     @staticmethod
-    def trajectory_set_from_numpy_degrees(
+    def from_numpy_degrees(
         pyoutfit: PyOutfit,
         trajectory_id: NDArray[np.uint32],
         ra_deg: NDArray[np.float64],
@@ -262,7 +262,7 @@ class TrajectorySet:
 
         See also
         ------------
-        * `trajectory_set_from_numpy_radians` — Zero-copy variant for radian inputs.
+        * `from_numpy_radians` — Zero-copy variant for radian inputs.
         """
         ...
 
