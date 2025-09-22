@@ -3,29 +3,47 @@ requires = ["maturin>=1,<2"]
 build-backend = "maturin"
 
 [project]
-name = "pyOutfit"
-version = "1.0.0"
-description = "Default template for PDM package"
+name = "py-outfit"
+
+# take version from Cargo.toml
+dynamic = ["version"]
+
+description = "Python bindings for Outfit (Rust) — Gauss IOD, ephemerides, etc."
 authors = [{ name = "FusRoman", email = "roman.le-montagner@ijclab.in2p3.fr" }]
-dependencies = ["maturin>=1.9.4", "pip>=25.2", "numpy>=2.3.3", "pandas>=2.3.2", "astropy>=7.1.0", "pyarrow>=21.0.0"]
-requires-python = "==3.12.*"
+dependencies = [
+    "maturin>=1.9.4",
+    "pip>=25.2",
+    "numpy>=2.3.3",
+    "pandas>=2.3.2",
+    "astropy>=7.1.0",
+    "pyarrow>=21.0.0",
+]
+requires-python = ">=3.12"
 readme = "README.md"
-license = { text = "CeCILL-C" }
+license = { file = "LICENSE" }
+keywords = ["astronomy", "orbit-determination", "rust", "pyo3", "maturin"]
 classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: CeCILL-C Free Software License Agreement (CeCILL-C)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Rust",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
 ]
 
 [project.optional-dependencies]
-examples = [
-    "matplotlib>=3.10.6",
-]
+examples = ["matplotlib>=3.10.6"]
 [tool.pdm]
 distribution = false
 
 [dependency-groups]
-dev = [
-    "ipython>=9.5.0",
-    "pytest>=8.4.2",
-]
+dev = ["ipython>=9.5.0", "pytest>=8.4.2"]

@@ -8,7 +8,7 @@ High-performance Python bindings for the **Outfit** orbit-determination engine (
 <p>
 	<strong>pyOutfit</strong><br/>
 	<a href="https://github.com/FusRoman/pyOutfit/actions/workflows/ci.yml"><img src="https://github.com/FusRoman/pyOutfit/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"/></a>
-	<a href="https://pypi.org/project/pyOutfit/"><img src="https://img.shields.io/pypi/v/pyOutfit.svg" alt="PyPI version"/></a>
+	<a href="https://pypi.org/project/py-outfit/"><img src="https://img.shields.io/pypi/v/py-outfit.svg" alt="PyPI version"/></a>
 	<a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.12-blue.svg" alt="Python 3.12"/></a>
 	<a href="https://github.com/PyO3/maturin"><img src="https://img.shields.io/badge/build-maturin-informational.svg" alt="Build (maturin)"/></a>
 	<a href="LICENSE"><img src="https://img.shields.io/badge/license-CeCILL--C-blue.svg" alt="License: CeCILL-C"/></a>
@@ -79,7 +79,7 @@ Until wheels are published on PyPI, build from source:
 git clone <this-repo-url>
 cd pyOutfit
 pip install maturin
-maturin develop  # or: maturin build --release && pip install target/wheels/pyOutfit-*.whl
+maturin develop  # or: maturin build --release && pip install target/wheels/py_outfit-*.whl
 ```
 
 System requirements:
@@ -109,7 +109,8 @@ from py_outfit import PyOutfit, Observer, IODParams, TrajectorySet
 env = PyOutfit("horizon:DE440", "FCCT14")
 
 # 2. Define (or fetch) an observer
-obs = Observer(longitude=12.345, latitude=-5.0, elevation=1_000.0, name="DemoSite", ra_accuracy=None, dec_accuracy=None)
+# NOTE: elevation is in kilometers (km), not meters
+obs = Observer(longitude=12.345, latitude=-5.0, elevation=1.0, name="DemoSite", ra_accuracy=None, dec_accuracy=None)
 env.add_observer(obs)
 print(env.show_observatories())
 
@@ -130,7 +131,7 @@ ts = TrajectorySet.from_numpy_degrees(
 	mjd_tt=times_mjd_tt,
 	observer=obs,
 )
-print(ts, "Total obs:", ts.total_observations())
+print(ts, "Trajectories:", ts.number_of_trajectories(), "Total obs:", ts.total_observations())
 
 # 5. Configure IOD parameters (builder pattern + parallel disabled for small sample)
 params = (IODParams.builder()
@@ -147,9 +148,11 @@ print("Errors:", errors)
 # 7. Inspect one result
 traj_id, (gauss_res, rms) = next(iter(ok.items()))
 print("Trajectory", traj_id, "elements type:", gauss_res.elements_type())
-if gauss_res.keplerian():
-	kep = gauss_res.keplerian()
-	print("Have keplerian elements (semi-major axis etc.)")
+kep = gauss_res.keplerian()
+if kep is not None:
+	# Example access (fields depend on elements family)
+	print("Keplerian reference epoch (MJD):", kep.reference_epoch)
+	print("Eccentricity:", kep.eccentricity)
 ```
 
 ## 🔧 Working with `IODParams`
