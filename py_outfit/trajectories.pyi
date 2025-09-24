@@ -13,20 +13,27 @@ from py_outfit.observer import Observer
 from py_outfit.py_outfit import PyOutfit
 
 Key = Union[int, str]
+"""
+Key used to identify a trajectory (either by its MPC code, a string ID or just an integer).
+"""
 PathLike = Union[str, Path]
+"""
+Path-like type (either a `str` or a `Path` from `pathlib`).
+"""
 
 class TrajectorySet:
     """
-    Container of time-ordered observations grouped by object (trajectory),
-    with helpers to run Gauss-based IOD in batch.
+    Container for time‑ordered astrometric observations grouped by object identifiers, designed as the primary entry point for batch workflows.
 
-    See also
-    ------------
-    * `from_numpy_radians` — Zero-copy ingestion from radians.
-    * `from_numpy_degrees` — Degree/arcsec ingestion with conversion.
-    * `new_from_mpc_80col` / `add_from_mpc_80col` — Read MPC 80-column files.
-    * `new_from_ades` / `add_from_ades` — Read ADES JSON/XML files.
-    * `estimate_all_orbits` — Batch Gauss IOD over all trajectories.
+    A TrajectorySet represents a mapping from a user-supplied key to a time‑ordered view of observations for that object. It enables loading large collections of observations, inspecting basic statistics, and running Gauss-based Initial Orbit Determination across all trajectories in a single operation. Keys can be integers or strings and are preserved end‑to‑end, making it straightforward to relate results back to upstream catalogs or pipeline identifiers.
+
+    The container behaves like a Python dictionary for common operations such as membership tests, iteration, indexing, and length queries. Each entry provides a read‑only Observations view that exposes per‑trajectory data without copying, keeping memory usage predictable. This structure is intended to integrate cleanly with scientific Python workflows while delegating all heavy computation to the Rust engine underneath.
+
+    Ingestion supports two main paths. A zero‑copy path accepts right ascension and declination in radians, epochs in MJD (TT), and a single Observer for the entire batch. A compatible degrees and arcseconds path performs a single conversion to radians before storing data. Trajectories can also be constructed from standard astronomy formats such as MPC 80‑column and ADES (JSON or XML), and an existing set can be extended by appending additional files when needed.
+
+    The container is optimized for batch IOD. The dedicated batch method executes the Gauss solver over all stored trajectories using parameters supplied by IODParams and returns per‑trajectory outcomes together with error messages for failures. Execution may be sequential or parallel depending on configuration, with optional deterministic seeding for reproducibility. When run sequentially, cooperative cancellation allows returning partial results if interrupted by the user.
+
+    The type does not perform de‑duplication or cross‑trajectory merging and assumes inputs are pre‑grouped as intended. Units follow the package conventions: angles are treated in radians internally, epochs use MJD (TT), and when ingesting degrees the provided uncertainties are interpreted in arcseconds. A single observing site applies per ingestion call. The overall goal is to make data flow explicit, predictable, and efficient for production pipelines.
     """
 
     # --- Introspection & stats ---
@@ -42,11 +49,11 @@ class TrajectorySet:
         """
         Membership test (like a Python dict).
 
-        Arguments
+        Parameters
         -----------------
         * `key`: Object identifier (int MPC packed code or string id).
 
-        Return
+        Returns
         ----------
         * `True` if the trajectory exists in the set, `False` otherwise.
 
@@ -60,11 +67,11 @@ class TrajectorySet:
         """
         Subscript access (dict-like): return the `Observations` of a given object.
 
-        Arguments
+        Parameters
         -----------------
         * `key`: Object identifier (int or str).
 
-        Return
+        Returns
         ----------
         * An `Observations` view for that trajectory.
 
@@ -84,13 +91,10 @@ class TrajectorySet:
         """
         Return the list of keys (like `dict.keys()`).
 
-        Arguments
-        -----------------
-        * *(none)*
-
-        Return
+        Returns
         ----------
-        * `list[Key]` of all object identifiers.
+        list[Key]
+            A list of all object identifiers currently stored.
 
         See also
         ------------
@@ -103,13 +107,10 @@ class TrajectorySet:
         """
         Return the list of trajectories (like `dict.values()`).
 
-        Arguments
-        -----------------
-        * *(none)*
-
-        Return
+        Returns
         ----------
-        * `list[Observations]` containing one entry per object.
+        list[Observations]
+            A list of all `Observations` currently stored.
 
         See also
         ------------
@@ -122,13 +123,10 @@ class TrajectorySet:
         """
         Return the list of `(key, Observations)` pairs (like `dict.items()`).
 
-        Arguments
-        -----------------
-        * *(none)*
-
-        Return
+        Returns
         ----------
-        * `list[tuple[Key, Observations]]`.
+        list[tuple[Key, Observations]]
+            A list of all `(object_id, Observations)` pairs currently stored.
 
         See also
         ------------
@@ -141,11 +139,11 @@ class TrajectorySet:
         """
         Iterate over keys (like a dict).
 
-        Arguments
+        Parameters
         -----------------
         * *(none)*
 
-        Return
+        Returns
         ----------
         * `Iterator[Key]` yielding object identifiers.
 
@@ -160,9 +158,10 @@ class TrajectorySet:
         """
         Total number of observations across all trajectories.
 
-        Return
+        Returns
         ----------
-        * `int` — sum over all per-trajectory counts.
+        int
+            sum over all per-trajectory counts.
         """
         ...
 
@@ -170,9 +169,10 @@ class TrajectorySet:
         """
         Number of trajectories currently stored.
 
-        Return
+        Returns
         ----------
-        * `int` — number of distinct trajectory IDs.
+        int
+            number of distinct trajectory IDs.
         """
         ...
 
@@ -180,10 +180,11 @@ class TrajectorySet:
         """
         Pretty-printed statistics about observations per trajectory.
 
-        Return
+        Returns
         ----------
-        * A formatted `str` (histogram/stats), or
-          `"No trajectories available."` if empty.
+        str
+            A formatted `str` (histogram/stats), or
+            `"No trajectories available."` if empty.
         """
         ...
 
@@ -204,24 +205,34 @@ class TrajectorySet:
 
         This path uses a zero-copy ingestion under the hood.
 
-        Arguments
+        Parameters
         -----------------
-        * `pyoutfit`: Global environment (ephemerides, observers, error model).
-        * `trajectory_id`: `np.uint32` array — one ID per observation.
-        * `ra`: `np.float64` array — Right Ascension in **radians**.
-        * `dec`: `np.float64` array — Declination in **radians**.
-        * `error_ra_rad`: 1-σ RA uncertainty (**radians**) applied to the whole batch.
-        * `error_dec_rad`: 1-σ DEC uncertainty (**radians**) applied to the whole batch.
-        * `mjd_tt`: `np.float64` array — epochs in **MJD (TT)** (days).
-        * `observer`: Single observing site for the whole batch.
+        pyoutfit : PyOutfit 
+            Global environment (ephemerides, observers, error model).
+        trajectory_id : NDArray[np.uint32]
+            `np.uint32` array — one ID per observation.
+        ra : NDArray[np.float64]
+            `np.float64` array — Right Ascension in **radians**.
+        dec : NDArray[np.float64]
+            `np.float64` array — Declination in **radians**.
+        error_ra_rad : float
+            1-σ RA uncertainty (**radians**) applied to the whole batch.
+        error_dec_rad : float
+            1-σ DEC uncertainty (**radians**) applied to the whole batch.
+        mjd_tt : NDArray[np.float64]
+            `np.float64` array — epochs in **MJD (TT)** (days).
+        observer : Observer
+            Single observing site for the whole batch.
 
-        Return
+        Returns
         ----------
-        * A new `TrajectorySet` populated from the provided inputs.
+        TrajectorySet
+            A new `TrajectorySet` populated from the provided inputs.
 
         Raises
         ----------
-        * `ValueError` if input arrays have mismatched lengths.
+        ValueError
+            if input arrays have mismatched lengths.
         """
         ...
 
@@ -242,24 +253,34 @@ class TrajectorySet:
 
         Internally converts once to radians, then ingests.
 
-        Arguments
+        Parameters
         -----------------
-        * `pyoutfit`: Global environment (ephemerides, observers, error model).
-        * `trajectory_id`: `np.uint32` array — one ID per observation.
-        * `ra_deg`: `np.float64` array — Right Ascension in **degrees**.
-        * `dec_deg`: `np.float64` array — Declination in **degrees**.
-        * `error_ra_arcsec`: 1-σ RA uncertainty (**arcseconds**) applied to the batch.
-        * `error_dec_arcsec`: 1-σ DEC uncertainty (**arcseconds**) applied to the batch.
-        * `mjd_tt`: `np.float64` array — epochs in **MJD (TT)** (days).
-        * `observer`: Single observing site for the whole batch.
+        pyoutfit : PyOutfit
+            Global environment (ephemerides, observers, error model).
+        trajectory_id : NDArray[np.uint32]
+            `np.uint32` array — one ID per observation.
+        ra_deg : NDArray[np.float64]
+            `np.float64` array — Right Ascension in **degrees**.
+        dec_deg : NDArray[np.float64]
+            `np.float64` array — Declination in **degrees**.
+        error_ra_arcsec : float
+            1-σ RA uncertainty (**arcseconds**) applied to the batch.
+        error_dec_arcsec : float
+            1-σ DEC uncertainty (**arcseconds**) applied to the batch.
+        mjd_tt : NDArray[np.float64]
+            `np.float64` array — epochs in **MJD (TT)** (days).
+        observer : Observer
+            Single observing site for the whole batch.
 
-        Return
+        Returns
         ----------
-        * A new `TrajectorySet` populated from the provided inputs.
+        TrajectorySet
+            A new `TrajectorySet` populated from the provided inputs.
 
         Raises
         ----------
-        * `ValueError` if input arrays have mismatched lengths.
+        ValueError
+            if input arrays have mismatched lengths.
 
         See also
         ------------
@@ -276,14 +297,17 @@ class TrajectorySet:
         """
         Build a `TrajectorySet` from a **MPC 80-column** file.
 
-        Arguments
+        Parameters
         -----------------
-        * `pyoutfit`: Global environment (ephemerides, observers, error model).
-        * `path`: File path (`str` or Path from pathlib) to a MPC 80-column text file.
+        pyoutfit : PyOutfit
+            Global environment (ephemerides, observers, error model).
+        path : PathLike
+            File path (`str` or Path from pathlib) to a MPC 80-column text file.
 
-        Return
+        Returns
         ----------
-        * A new `TrajectorySet` populated from the file contents.
+        TrajectorySet
+            A new `TrajectorySet` populated from the file contents.
 
         Notes
         ----------
@@ -304,14 +328,17 @@ class TrajectorySet:
         """
         Append observations from a **MPC 80-column** file into this set.
 
-        Arguments
+        Parameters
         -----------------
-        * `pyoutfit`: Global environment (ephemerides, observers, error model).
-        * `path`: File path (`str` or Path from pathlib) to a MPC 80-column text file.
+        pyoutfit : PyOutfit
+            Global environment (ephemerides, observers, error model).
+        path : PathLike
+            File path (`str` or Path from pathlib) to a MPC 80-column text file.
 
-        Return
+        Returns
         ----------
-        * `None` — The internal map is updated in place.
+        None
+            The internal map is updated in place.
 
         Notes
         ----------
@@ -333,16 +360,21 @@ class TrajectorySet:
         """
         Build a `TrajectorySet` from an **ADES** file (JSON or XML).
 
-        Arguments
+        Parameters
         -----------------
-        * `pyoutfit`: Global environment (ephemerides, observers, error model).
-        * `path`: File path (`str` or Path from pathlib) to an ADES JSON/XML file.
-        * `error_ra_arcsec`: Optional global RA 1-σ (arcsec) if not specified per row.
-        * `error_dec_arcsec`: Optional global DEC 1-σ (arcsec) if not specified per row.
+        pyoutfit : PyOutfit
+            Global environment (ephemerides, observers, error model).
+        path : PathLike
+            File path (`str` or Path from pathlib) to an ADES JSON/XML file.
+        error_ra_arcsec : Optional[float]
+            Optional global RA 1-σ (arcsec) if not specified per row.
+        error_dec_arcsec : Optional[float]
+            Optional global DEC 1-σ (arcsec) if not specified per row.
 
-        Return
+        Returns
         ----------
-        * A new `TrajectorySet` populated from the ADES file.
+        TrajectorySet
+            A new `TrajectorySet` populated from the ADES file.
 
         Notes
         ----------
@@ -364,16 +396,21 @@ class TrajectorySet:
         """
         Append observations from an **ADES** file (JSON/XML) into this set.
 
-        Arguments
+        Parameters
         -----------------
-        * `pyoutfit`: Global environment (ephemerides, observers, error model).
-        * `path`: File path (`str` or Path from pathlib) to an ADES JSON/XML file.
-        * `error_ra_arcsec`: Optional global RA 1-σ (arcsec) if not specified per row.
-        * `error_dec_arcsec`: Optional global DEC 1-σ (arcsec) if not specified per row.
+        pyoutfit : PyOutfit
+            Global environment (ephemerides, observers, error model).
+        path : PathLike
+            File path (`str` or Path from pathlib) to an ADES JSON/XML file.
+        error_ra_arcsec : Optional[float]
+            Optional global RA 1-σ (arcsec) if not specified per row.
+        error_dec_arcsec : Optional[float]
+            Optional global DEC 1-σ (arcsec) if not specified per row.
 
-        Return
+        Returns
         ----------
-        * `None` — The internal map is updated in place.
+        None
+            The internal map is updated in place.
 
         Notes
         ----------
@@ -402,24 +439,32 @@ class TrajectorySet:
 
         Cancellation
         ----------
-        The computation periodically checks for `KeyboardInterrupt` (Ctrl-C). If
-        triggered, partial results accumulated so far are returned:
-        * the first dict contains successful `(GaussResult, rms)` per object,
-        * the second dict contains error messages per object.
+        The computation periodically checks for `KeyboardInterrupt` (Ctrl-C). 
+        This work only if parallel is disabled (`params.do_parallel() == False`).
+        If parallel is enabled, the computation cannot be interrupted and you will need to kill the process manually.
 
-        Arguments
+        If cancellation is triggered, partial results accumulated so far are returned:
+
+        - the first dict contains successful `(GaussResult, rms)` per object,
+        - the second dict contains error messages per object.
+
+        Parameters
         -----------------
-        * `env`: Global Outfit state (ephemerides, EOP, error model).
-        * `params`: IOD tuning parameters (`IODParams`). If `params.do_parallel()`
-          is `True`, a parallel path is used internally; otherwise a sequential
-          path with cooperative cancellation.
-        * `seed`: Optional RNG seed for reproducibility.
+        env : PyOutfit
+            Global environment (ephemerides, observers, error model).
+        params : IODParams
+            IOD tuning parameters (`IODParams`). If `params.do_parallel()`
+            is `True`, a parallel path is used internally; otherwise a sequential
+            path with cooperative cancellation.
+        seed : Optional[int]
+            Optional RNG seed for reproducibility.
 
-        Return
+        Returns
         ----------
-        * `(ok, err)` where:
-          - `ok: Dict[object_id, (GaussResult, float)]` — successful results with RMS,
-          - `err: Dict[object_id, str]` — human-readable error messages.
+        ok: Dict[object_id, (GaussResult, float)]
+            successful gauss results with RMS,
+        err: Dict[object_id, str]
+            error messages for failed trajectories.
 
         Notes
         ----------

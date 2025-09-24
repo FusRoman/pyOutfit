@@ -39,7 +39,7 @@ class EquinoctialElements:
         """
         Build a new equinoctial element set.
 
-        Arguments
+        Parameters
         -----------------
         * `reference_epoch`: MJD (TDB).
         * `semi_major_axis`: Semi-major axis (AU).
@@ -49,9 +49,10 @@ class EquinoctialElements:
         * `tan_half_incl_cos_node`: q = tan(i/2) * cos(Ω).
         * `mean_longitude`: λ (radians).
 
-        Return
+        Returns
         ----------
-        * A new `EquinoctialElements`.
+        EquinoctialElements
+            A new equinoctial element set.
         """
         ...
 
@@ -96,9 +97,10 @@ class EquinoctialElements:
         """
         Convert equinoctial → Keplerian elements.
 
-        Return
+        Returns
         ----------
-        * `KeplerianElements`.
+        KeplerianElements
+            The equivalent Keplerian elements.
         """
         ...
 

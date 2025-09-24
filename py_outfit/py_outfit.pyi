@@ -117,15 +117,26 @@ class PyOutfit:
         """
         Create a new Outfit environment.
 
-        Arguments
+        Parameters
         -----------------
-        * `ephem`: Ephemerides selector, e.g. "horizon:DE440".
-        * `error_model`: Astrometric error model, e.g. "FCCT14" or "VFCC17".
-          Unknown strings default to "FCCT14".
+        ephem : str
+            Ephemerides selector in the form "{source}:{version}". The source must be
+            "horizon" (legacy JPL DE binaries) or "naif" (NAIF SPK/DAF kernels). The
+            version must be a supported DE series label recognized by Outfit. Common
+            values include "DE430", "DE431", "DE440", "DE441", and "DE442". Examples
+            include "horizon:DE440" and "naif:DE441". The ephemeris file is resolved
+            into the user cache and opened lazily; when downloads are enabled at build
+            time, a missing file may be fetched automatically, otherwise an error is
+            raised.
+        error_model : str
+            Astrometric error model. Accepted values are "FCCT14", "VFCC17", and
+            "CBM10". Unknown strings default to "FCCT14". The model provides per-site
+            RA/DEC bias and RMS used during orbit determination.
 
-        Return
+        Returns
         ----------
-        * A configured `PyOutfit` ready to accept observatories and run IOD.
+        PyOutfit
+            An initialized `PyOutfit` environment.
         """
         ...
 
@@ -133,13 +144,10 @@ class PyOutfit:
         """
         Register an `Observer` in the current environment.
 
-        Arguments
+        Parameters
         -----------------
-        * `observer`: The observatory/site descriptor to register.
-
-        Return
-        ----------
-        * `None` on success.
+        observer : Observer
+            The observatory/site descriptor to register.
         """
         ...
 
@@ -147,13 +155,10 @@ class PyOutfit:
         """
         Render a human-readable list of currently known observatories.
 
-        Arguments
-        -----------------
-        * (none)
-
-        Return
+        Returns
         ----------
-        * A formatted `str` (table/list) of observatories.
+        str
+            A formatted `str` (table/list) of observatories.
         """
         ...
 
@@ -161,12 +166,14 @@ class PyOutfit:
         """
         Lookup an `Observer` from its MPC code.
 
-        Arguments
+        Parameters
         -----------------
-        * `code`: MPC observatory code, e.g. "807".
+        code : str
+            MPC observatory code, e.g. "807".
 
-        Return
+        Returns
         ----------
-        * An `Observer` handle usable with `add_observer`.
+        Observer
+            an `Observer` handle usable with `add_observer`.
         """
         ...

@@ -16,6 +16,24 @@ The format is based on Keep a Changelog and this repository follows semantic ver
   - `trajectories.rs` — Trajectory batch readers and IOD orchestration helpers.
   - `orbit_type/keplerian.rs`, `equinoctial.rs`, `cometary.rs` — Orbital element representations and conversions.
   - `lib.rs` — crate entrypoint and Python binding exports.
+- Pandas integration: `DataFrame.outfit` accessor in `py_outfit.pandas_pyoutfit` with
+  `estimate_orbits(...)` and a `Schema` helper for column remapping. Supports both
+  degrees+arcseconds and radians workflows, and uses a single `Observer` for the set.
+- Observatory-aware helpers and estimation methods:
+  - Trajectory ingestion builders accept an `Observer` (single-station workflow) and
+    `TrajectorySet.estimate_all_orbits(...)` performs batch IOD using that site.
+  - Single-object `Observations.estimate_best_orbit(env, params, seed=...)` mirrors the
+    batch path for a single trajectory.
+  - Display helpers resolving observatory names via the environment:
+    `show_with_env`, `table_wide_with_env`, `table_iso_with_env`.
+- User documentation:
+  - New tutorial “IOD from trajectories” (loading from MPC/ADES, NumPy arrays, batch/single IOD).
+  - New tutorial “Working with orbit results” (inspect `GaussResult`, extract/convert element sets, export).
+  - New tutorial “Using pandas with pyOutfit” (vectorized IOD from DataFrames via the accessor).
+  Each tutorial’s code blocks were externalized into standalone, runnable Python snippets under
+  `docs/tutorials/tutorial_snippets/` and included via the snippets macro.
+- CI: Added a job “Run documentation Python snippets” that builds the extension with `maturin
+  develop` and executes every `docs/tutorials/tutorial_snippets/*.py` to keep examples up to date.
 
 ### Python bindings
 - Stub type hinting files (`.pyi`) and `py.typed` are included to provide static typing / IDE support:

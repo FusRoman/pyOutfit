@@ -35,7 +35,7 @@ class KeplerianElements:
         """
         Build a new Keplerian element set.
 
-        Arguments
+        Parameters
         -----------------
         * `reference_epoch`: MJD (TDB).
         * `semi_major_axis`: Semi-major axis (AU).
@@ -45,9 +45,10 @@ class KeplerianElements:
         * `periapsis_argument`: Argument of periapsis ω (radians).
         * `mean_anomaly`: Mean anomaly M (radians).
 
-        Return
+        Returns
         ----------
-        * A new `KeplerianElements`.
+        KeplerianElements
+            A new Keplerian element set.
         """
         ...
 
@@ -92,9 +93,10 @@ class KeplerianElements:
         """
         Convert keplerian → equinoctial elements.
 
-        Return
+        Returns
         ----------
-        * `EquinoctialElements`.
+        EquinoctialElements
+            The equivalent equinoctial elements.
         """
         ...
 

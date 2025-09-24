@@ -29,14 +29,15 @@ class GaussResult:
         """
         Build a `GaussResult` from Keplerian elements.
 
-        Arguments
+        Parameters
         -----------------
         * `keplerian`: Keplerian element set.
         * `corrected`: If `True`, produce a corrected-stage result; otherwise preliminary.
 
-        Return
+        Returns
         ----------
-        * A `GaussResult` embedding the provided elements.
+        GaussResult
+            A `GaussResult` embedding the provided elements.
         """
         ...
 
@@ -45,14 +46,15 @@ class GaussResult:
         """
         Build a `GaussResult` from Equinoctial elements.
 
-        Arguments
+        Parameters
         -----------------
         * `equinoctial`: Equinoctial element set.
         * `corrected`: If `True`, produce a corrected-stage result; otherwise preliminary.
 
-        Return
+        Returns
         ----------
-        * A `GaussResult` embedding the provided elements.
+        GaussResult
+            A `GaussResult` embedding the provided elements.
         """
         ...
 
@@ -61,14 +63,15 @@ class GaussResult:
         """
         Build a `GaussResult` from Cometary elements.
 
-        Arguments
+        Parameters
         -----------------
         * `cometary`: Cometary element set.
         * `corrected`: If `True`, produce a corrected-stage result; otherwise preliminary.
 
-        Return
+        Returns
         ----------
-        * A `GaussResult` embedding the provided elements.
+        GaussResult
+            A `GaussResult` embedding the provided elements.
         """
         ...
 
@@ -77,9 +80,10 @@ class GaussResult:
         """
         Whether this result is the corrected stage.
 
-        Return
+        Returns
         ----------
-        * `True` for `CorrectedOrbit`, `False` for `PrelimOrbit`.
+        bool
+            `True` for `CorrectedOrbit`, `False` for `PrelimOrbit`.
         """
         ...
 
@@ -87,9 +91,10 @@ class GaussResult:
         """
         Whether this result is the preliminary Gauss solution.
 
-        Return
+        Returns
         ----------
-        * `True` for `PrelimOrbit`, `False` otherwise.
+        bool
+            `True` for `PrelimOrbit`, `False` for `CorrectedOrbit`.
         """
         ...
 
@@ -98,9 +103,10 @@ class GaussResult:
         """
         Return the family of orbital elements stored inside.
 
-        Return
+        Returns
         ----------
-        * `"keplerian" | "equinoctial" | "cometary"`.
+        Literal["keplerian", "equinoctial", "cometary"]
+            The family of orbital elements stored inside.
         """
         ...
 
@@ -109,9 +115,10 @@ class GaussResult:
         """
         Extract Keplerian elements if present.
 
-        Return
+        Returns
         ----------
-        * `KeplerianElements` if the underlying family is keplerian, else `None`.
+        KeplerianElements | None
+            `KeplerianElements` if the underlying family is keplerian, else `None`.
         """
         ...
 
@@ -119,9 +126,10 @@ class GaussResult:
         """
         Extract Equinoctial elements if present.
 
-        Return
+        Returns
         ----------
-        * `EquinoctialElements` if the underlying family is equinoctial, else `None`.
+        EquinoctialElements | None
+            `EquinoctialElements` if the underlying family is equinoctial, else `None`.
         """
         ...
 
@@ -129,9 +137,10 @@ class GaussResult:
         """
         Extract Cometary elements if present.
 
-        Return
+        Returns
         ----------
-        * `CometaryElements` if the underlying family is cometary, else `None`.
+        CometaryElements | None
+            `CometaryElements` if the underlying family is cometary, else `None`.
         """
         ...
 
@@ -153,9 +162,10 @@ class GaussResult:
           - Cometary: `reference_epoch`, `perihelion_distance`, `eccentricity`,
             `inclination`, `ascending_node_longitude`, `periapsis_argument`, `true_anomaly`
 
-        Return
+        Returns
         ----------
-        * A `dict[str, Any]` ready for serialization or logging.
+        dict[str, Any]
+            A structured dict representation of the result.
         """
         ...
 

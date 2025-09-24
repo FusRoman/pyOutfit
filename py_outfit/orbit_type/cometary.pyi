@@ -36,7 +36,7 @@ class CometaryElements:
         """
         Build a new cometary element set.
 
-        Arguments
+        Parameters
         -----------------
         * `reference_epoch`: MJD (TDB).
         * `perihelion_distance`: q (AU).
@@ -46,9 +46,10 @@ class CometaryElements:
         * `periapsis_argument`: ω (rad).
         * `true_anomaly`: ν at epoch (rad).
 
-        Return
+        Returns
         ----------
-        * A new `CometaryElements`.
+        CometaryElements
+            A new cometary element set.
         """
         ...
 
@@ -93,9 +94,10 @@ class CometaryElements:
         """
         Convert cometary → Keplerian elements.
 
-        Return
+        Returns
         ----------
-        * `KeplerianElements` if `e > 1`.
+        KeplerianElements
+            if `e > 1`.
 
         Raises
         ----------
@@ -107,9 +109,10 @@ class CometaryElements:
         """
         Convert cometary → Equinoctial elements.
 
-        Return
+        Returns
         ----------
-        * `EquinoctialElements` if `e > 1`.
+        EquinoctialElements
+            if `e > 1`
 
         Raises
         ----------

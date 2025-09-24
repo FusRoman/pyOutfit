@@ -1,11 +1,13 @@
 # py_outfit/observations.pyi
 from __future__ import annotations
 
-from typing import Iterator
+from typing import Iterator, Optional, Tuple
 import numpy as np
 from numpy.typing import NDArray
 
 from py_outfit.py_outfit import PyOutfit
+from .iod_params import IODParams
+from .iod_gauss import GaussResult
 
 class Observations:
     """
@@ -87,6 +89,7 @@ class Observations:
             Each tuple is `(mjd_tt, ra_rad, dec_rad, sigma_ra, sigma_dec)`.
         """
         ...
+
     # -----------------
     # Display (compact)
     # -----------------
@@ -129,6 +132,7 @@ class Observations:
             Formatted table (with site names when available).
         """
         ...
+
     # --------------
     # Display (wide)
     # --------------
@@ -188,6 +192,7 @@ class Observations:
             Unicode table (box drawing).
         """
         ...
+
     # -------------
     # Display (ISO)
     # -------------
@@ -236,3 +241,45 @@ class Observations:
             Unicode table (box drawing).
         """
         ...
+
+    # ------------------------------
+    # Orbit determination (single)
+    # ------------------------------
+    def estimate_best_orbit(
+        self,
+        env: PyOutfit,
+        params: IODParams,
+        seed: Optional[int] = ...,
+    ) -> Tuple[GaussResult, float]:
+        """
+        Estimate the best orbit for this observation set using Gauss IOD.
+
+        Parameters
+        ----------
+        env : PyOutfit
+            Global environment providing ephemerides and the error model.
+        params : IODParams
+            IOD configuration (triplet constraints, noise realizations, filters).
+        seed : Optional[int], default None
+            Optional RNG seed for deterministic runs.
+
+        Notes
+        -----
+        Due to a known bug in the Rust backend (Outfit) within
+        `apply_batch_rms_correction`, the per-observation uncertainties
+        `(sigma_ra, sigma_dec)` are modified in place and the changes persist on
+        the same `Observations` instance. Calling `estimate_best_orbit` multiple
+        times on the same object can therefore accumulate these changes and yield
+        different RMS values across calls. This behavior is unintended and will
+        be fixed upstream. As a temporary workaround, construct a fresh
+        `Observations` object for each call or use a copy that restores the
+        original uncertainties. Providing a `seed` only makes noise sampling
+        deterministic and does not prevent this mutation.
+
+        Returns
+        -------
+        (GaussResult, float)
+            The orbit result and the RMS value (radians).
+        """
+        ...
+

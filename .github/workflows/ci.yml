@@ -66,6 +66,69 @@ jobs:
         run: |
           ./.venv/bin/pytest -q --maxfail=1 --disable-warnings -ra
 
+  docs-snippets:
+    name: Run documentation Python snippets
+    runs-on: ubuntu-latest
+    env:
+      CARGO_TERM_COLOR: always
+      RUST_BACKTRACE: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          components: clippy,rustfmt
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            .
+          cache-on-failure: true
+
+      - name: Create virtualenv (.venv)
+        run: |
+          python -m venv .venv
+          ./.venv/bin/python -V
+
+      - name: Upgrade pip & install build tools
+        run: |
+          ./.venv/bin/python -m pip install --upgrade pip wheel setuptools
+          ./.venv/bin/pip install maturin
+
+      - name: Build and develop-install py_outfit
+        run: |
+          ./.venv/bin/maturin develop --release
+
+      - name: Show installed package info
+        run: |
+          ./.venv/bin/python -c "import sys; print('Python:', sys.version)"
+          ./.venv/bin/python -c "import py_outfit as m; print('py_outfit:', getattr(m,'__version__','unknown')); print('from:', m.__file__)"
+
+      - name: Run documentation snippets
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          SNIPPETS=(docs/tutorials/tutorial_snippets/*.py)
+          echo "Found ${#SNIPPETS[@]} snippet(s)."
+          for f in "${SNIPPETS[@]}"; do
+            # Skip cached/compiled files just in case (pattern already excludes __pycache__)
+            case "$f" in
+              *__pycache__*) continue;;
+            esac
+            echo "=== Running $f ==="
+            ./.venv/bin/python "$f"
+          done
+
   lint:
     name: Rust lint (clippy & fmt)
     runs-on: ubuntu-latest
