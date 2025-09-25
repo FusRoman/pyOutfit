@@ -1,0 +1,3316 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://FusRoman.github.io/pyOutfit/1.0.0/api/iod_params/">
+      
+      
+        <link rel="prev" href="../observer/">
+      
+      
+        <link rel="next" href="../iod_gauss/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
+    
+    
+      
+        <title>IODParams - </title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e53b48f4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#iod-parameters" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="" class="md-header__button md-logo" aria-label="" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              IODParams
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/FusRoman/pyOutfit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pyOutfit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="" class="md-nav__button md-logo" aria-label="" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/FusRoman/pyOutfit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pyOutfit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/pyoutfit_environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyOutfit Environment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/iod_params/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    IODParams
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/trajectories_tuto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    IOD from trajectories
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/orbit_results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Working with orbit results
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/pandas_tuto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Using pandas with pyOutfit
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    API
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../py_outfit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    PyOutfit
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../observer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Observer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    IODParams
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    IODParams
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams" class="md-nav__link">
+    <span class="md-ellipsis">
+      IODParams
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="IODParams">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.n_noise_realizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_noise_realizations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.noise_scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      noise_scale
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.extf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extf
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.dtmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      dtmax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.dt_min" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt_min
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.dt_max_triplet" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt_max_triplet
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.optimal_interval_time" class="md-nav__link">
+    <span class="md-ellipsis">
+      optimal_interval_time
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.max_obs_for_triplets" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_obs_for_triplets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.max_triplets" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_triplets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.gap_max" class="md-nav__link">
+    <span class="md-ellipsis">
+      gap_max
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.max_ecc" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_ecc
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.max_perihelion_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_perihelion_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.min_rho2_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      min_rho2_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.r2_min_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      r2_min_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.r2_max_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      r2_max_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.aberth_max_iter" class="md-nav__link">
+    <span class="md-ellipsis">
+      aberth_max_iter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.aberth_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      aberth_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.kepler_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      kepler_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.max_tested_solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_tested_solutions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.newton_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      newton_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.newton_max_it" class="md-nav__link">
+    <span class="md-ellipsis">
+      newton_max_it
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.root_imag_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      root_imag_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.batch_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      batch_size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.do_parallel" class="md-nav__link">
+    <span class="md-ellipsis">
+      do_parallel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      builder
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder" class="md-nav__link">
+    <span class="md-ellipsis">
+      IODParamsBuilder
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="IODParamsBuilder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.n_noise_realizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_noise_realizations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.noise_scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      noise_scale
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.extf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extf
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.dtmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      dtmax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.dt_min" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt_min
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.dt_max_triplet" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt_max_triplet
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.optimal_interval_time" class="md-nav__link">
+    <span class="md-ellipsis">
+      optimal_interval_time
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.max_obs_for_triplets" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_obs_for_triplets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.max_triplets" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_triplets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.gap_max" class="md-nav__link">
+    <span class="md-ellipsis">
+      gap_max
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.max_ecc" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_ecc
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.max_perihelion_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_perihelion_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.min_rho2_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      min_rho2_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.r2_min_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      r2_min_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.r2_max_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      r2_max_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.aberth_max_iter" class="md-nav__link">
+    <span class="md-ellipsis">
+      aberth_max_iter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.aberth_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      aberth_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.kepler_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      kepler_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.max_tested_solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_tested_solutions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.newton_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      newton_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.newton_max_it" class="md-nav__link">
+    <span class="md-ellipsis">
+      newton_max_it
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.root_imag_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      root_imag_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.batch_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      batch_size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.do_parallel" class="md-nav__link">
+    <span class="md-ellipsis">
+      do_parallel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.do_sequential" class="md-nav__link">
+    <span class="md-ellipsis">
+      do_sequential
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.build" class="md-nav__link">
+    <span class="md-ellipsis">
+      build
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iod_gauss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    IODGauss
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Orbital Elements
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_6">
+            <span class="md-nav__icon md-icon"></span>
+            Orbital Elements
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orbit_type/keplerian/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Keplerian Elements
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orbit_type/equinoctial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Equinoctial Elements
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orbit_type/cometary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cometary Elements
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../observations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Observations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trajectories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Trajectories
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pandas_pyoutfit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Pandas Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams" class="md-nav__link">
+    <span class="md-ellipsis">
+      IODParams
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="IODParams">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.n_noise_realizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_noise_realizations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.noise_scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      noise_scale
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.extf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extf
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.dtmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      dtmax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.dt_min" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt_min
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.dt_max_triplet" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt_max_triplet
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.optimal_interval_time" class="md-nav__link">
+    <span class="md-ellipsis">
+      optimal_interval_time
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.max_obs_for_triplets" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_obs_for_triplets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.max_triplets" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_triplets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.gap_max" class="md-nav__link">
+    <span class="md-ellipsis">
+      gap_max
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.max_ecc" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_ecc
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.max_perihelion_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_perihelion_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.min_rho2_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      min_rho2_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.r2_min_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      r2_min_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.r2_max_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      r2_max_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.aberth_max_iter" class="md-nav__link">
+    <span class="md-ellipsis">
+      aberth_max_iter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.aberth_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      aberth_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.kepler_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      kepler_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.max_tested_solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_tested_solutions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.newton_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      newton_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.newton_max_it" class="md-nav__link">
+    <span class="md-ellipsis">
+      newton_max_it
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.root_imag_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      root_imag_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.batch_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      batch_size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.do_parallel" class="md-nav__link">
+    <span class="md-ellipsis">
+      do_parallel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParams.builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      builder
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder" class="md-nav__link">
+    <span class="md-ellipsis">
+      IODParamsBuilder
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="IODParamsBuilder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.n_noise_realizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      n_noise_realizations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.noise_scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      noise_scale
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.extf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extf
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.dtmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      dtmax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.dt_min" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt_min
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.dt_max_triplet" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt_max_triplet
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.optimal_interval_time" class="md-nav__link">
+    <span class="md-ellipsis">
+      optimal_interval_time
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.max_obs_for_triplets" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_obs_for_triplets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.max_triplets" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_triplets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.gap_max" class="md-nav__link">
+    <span class="md-ellipsis">
+      gap_max
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.max_ecc" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_ecc
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.max_perihelion_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_perihelion_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.min_rho2_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      min_rho2_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.r2_min_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      r2_min_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.r2_max_au" class="md-nav__link">
+    <span class="md-ellipsis">
+      r2_max_au
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.aberth_max_iter" class="md-nav__link">
+    <span class="md-ellipsis">
+      aberth_max_iter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.aberth_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      aberth_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.kepler_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      kepler_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.max_tested_solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      max_tested_solutions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.newton_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      newton_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.newton_max_it" class="md-nav__link">
+    <span class="md-ellipsis">
+      newton_max_it
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.root_imag_eps" class="md-nav__link">
+    <span class="md-ellipsis">
+      root_imag_eps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.batch_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      batch_size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.do_parallel" class="md-nav__link">
+    <span class="md-ellipsis">
+      do_parallel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.do_sequential" class="md-nav__link">
+    <span class="md-ellipsis">
+      do_sequential
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py_outfit.iod_params.IODParamsBuilder.build" class="md-nav__link">
+    <span class="md-ellipsis">
+      build
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="iod-parameters">IOD Parameters</h1>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="py_outfit.iod_params.IODParams" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">py_outfit.iod_params.IODParams</span>
+
+
+</h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">IODParams</span><span class="p">()</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents first">
+
+
+        <p>Configuration for Gauss Initial Orbit Determination (IOD).</p>
+
+
+<details class="purpose" open>
+  <summary>Purpose</summary>
+  <p>This configuration centralizes all tunable parameters used by the Gauss pipeline.
+It covers candidate triplet selection, Monte Carlo perturbations, physical and
+numerical filters, solver tolerances, and RMS evaluation.
+The objective is to allow fine-grained control over the Gauss IOD process in a
+single container object.</p>
+</details>
+
+<details class="pipeline-overview" open>
+  <summary>Pipeline overview</summary>
+  <p>The pipeline proceeds in four main stages:</p>
+<ol>
+<li>
+<p>Triplet generation. Candidate observation triplets are constrained by
+<code>dt_min</code>, <code>dt_max_triplet</code>, and <code>optimal_interval_time</code>. Oversized datasets
+may be downsampled to <code>max_obs_for_triplets</code> before selection.</p>
+</li>
+<li>
+<p>Monte Carlo perturbation. Each triplet is expanded into multiple noisy copies
+(<code>n_noise_realizations</code>) drawn from Gaussian perturbations scaled by
+<code>noise_scale</code>.</p>
+</li>
+<li>
+<p>Orbit computation and filtering. Candidate orbits are produced by the Gauss
+solver and filtered by physical plausibility (<code>max_ecc</code>, <code>max_perihelion_au</code>,
+<code>r2_min_au</code>, <code>r2_max_au</code>, <code>min_rho2_au</code>) and numerical tolerances
+(<code>newton_eps</code>, <code>newton_max_it</code>, <code>root_imag_eps</code>, <code>aberth_max_iter</code>,
+<code>aberth_eps</code>, <code>kepler_eps</code>). A maximum of <code>max_tested_solutions</code> is retained.</p>
+</li>
+<li>
+<p>RMS evaluation. Candidates are scored by RMS residuals in a time window
+derived from <code>extf × (triplet span)</code> and clamped to at least <code>dtmax</code>. The
+candidate with the lowest RMS is selected.</p>
+</li>
+</ol>
+</details>
+
+<details class="defaults" open>
+  <summary>Defaults</summary>
+  <p>The default values are as follows (matching the Rust <code>Default</code> implementation).</p>
+<ol>
+<li>
+<p>Triplet / Monte Carlo parameters:</p>
+<ul>
+<li><code>n_noise_realizations</code> : 20</li>
+<li><code>noise_scale</code>          : 1.0</li>
+<li><code>extf</code>                 : -1.0   (negative = broad fallback window)</li>
+<li><code>dtmax</code>                : 30.0   (days)</li>
+<li><code>dt_min</code>               : 0.03   (days)</li>
+<li><code>dt_max_triplet</code>       : 150.0  (days)</li>
+<li><code>optimal_interval_time</code>: 20.0   (days)</li>
+<li><code>max_obs_for_triplets</code> : 100</li>
+<li><code>max_triplets</code>         : 10</li>
+<li><code>gap_max</code>              : 8/24   (days; 8 hours)</li>
+</ul>
+</li>
+<li>
+<p>Physical filters:</p>
+<ul>
+<li><code>max_ecc</code>           : 5.0</li>
+<li><code>max_perihelion_au</code> : 1.0e3</li>
+<li><code>min_rho2_au</code>       : 0.01   (AU)</li>
+</ul>
+</li>
+<li>
+<p>Heliocentric r2 bounds:</p>
+<ul>
+<li><code>r2_min_au</code> : 0.05   (AU)</li>
+<li><code>r2_max_au</code> : 200.0  (AU)</li>
+</ul>
+</li>
+<li>
+<p>Polynomial solver / numerics:</p>
+<ul>
+<li><code>aberth_max_iter</code> : 50</li>
+<li><code>aberth_eps</code>      : 1.0e-6</li>
+<li><code>kepler_eps</code>      : ≈ 2.22e-13 (1e3 × machine epsilon)</li>
+<li><code>newton_eps</code>      : 1.0e-10</li>
+<li><code>newton_max_it</code>   : 50</li>
+<li><code>root_imag_eps</code>   : 1.0e-6</li>
+</ul>
+</li>
+<li>
+<p>Parallelization:</p>
+<ul>
+<li><code>batch_size</code> : 4  (only effective if compiled with parallel features)</li>
+</ul>
+</li>
+</ol>
+</details>
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>RMS evaluation window is computed as:
+<code>dt_window = (last − first) × extf</code>, clamped so that <code>dt_window ≥ dtmax</code>.
+If <code>extf &lt; 0</code>, a broad fallback window is used (typically a multiple of the
+dataset span).</p>
+<p>The parameter <code>min_rho2_au</code> applies a topocentric distance constraint at the
+central epoch to avoid near-observer pathologies.</p>
+<p>Bounds <code>r2_min_au ≤ r2_max_au</code> provide plausibility constraints for the
+heliocentric distance when selecting roots of the degree-8 Gauss polynomial.</p>
+<p>Typical constraints are:
+<code>max_ecc ≥ 0</code>, <code>max_perihelion_au &gt; 0</code>, <code>min_rho2_au &gt; 0</code>,
+<code>aberth_max_iter ≥ 1</code>, <code>aberth_eps &gt; 0</code>, <code>kepler_eps &gt; 0</code>,
+<code>newton_eps &gt; 0</code>, <code>newton_max_it ≥ 1</code>, <code>root_imag_eps ≥ 0</code>,
+<code>max_tested_solutions ≥ 1</code>.</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.n_noise_realizations" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">n_noise_realizations</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">n_noise_realizations</span><span class="p">:</span> <span class="n"><span title="int">int</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Number of Monte Carlo perturbations per original triplet. <strong>Default:</strong> 20.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.noise_scale" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">noise_scale</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">noise_scale</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Scale applied to nominal RA/DEC uncertainties (1.0 ⇒ nominal). <strong>Default:</strong> 1.0.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.extf" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">extf</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">extf</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Extrapolation factor for the RMS evaluation window:
+<code>dt_window = (triplet span) × extf</code>, then clamped so <code>dt_window ≥ dtmax</code>.
+Negative values trigger a broad fallback window. <strong>Default:</strong> -1.0.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.dtmax" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">dtmax</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">dtmax</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Floor (days) for the RMS evaluation window. <strong>Default:</strong> 30.0.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.dt_min" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">dt_min</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">dt_min</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Minimum allowed span (days) between the <strong>first</strong> and <strong>last</strong> observations in a triplet.
+<strong>Default:</strong> 0.03.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.dt_max_triplet" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">dt_max_triplet</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">dt_max_triplet</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Maximum allowed span (days) within any candidate triplet. <strong>Default:</strong> 150.0.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.optimal_interval_time" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">optimal_interval_time</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">optimal_interval_time</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Target intra-triplet spacing (days) to favor well-separated observations. <strong>Default:</strong> 20.0.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.max_obs_for_triplets" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">max_obs_for_triplets</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">max_obs_for_triplets</span><span class="p">:</span> <span class="n"><span title="int">int</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Cap on observations used to build triplets (with uniform downsampling if exceeded). <strong>Default:</strong> 100.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.max_triplets" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">max_triplets</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">max_triplets</span><span class="p">:</span> <span class="n"><span title="int">int</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Maximum number of triplets evaluated per trajectory (post-filter). <strong>Default:</strong> 10.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.gap_max" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">gap_max</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">gap_max</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Maximum allowed intra-batch time gap (days) for RMS calibration. <strong>Default:</strong> 8/24 (≈ 0.3333).</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.max_ecc" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">max_ecc</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">max_ecc</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Maximum accepted eccentricity. <strong>Default:</strong> 5.0.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.max_perihelion_au" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">max_perihelion_au</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">max_perihelion_au</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Maximum accepted perihelion distance (AU). <strong>Default:</strong> 1.0e3.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.min_rho2_au" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">min_rho2_au</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">min_rho2_au</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Minimum admissible topocentric distance at the central epoch (AU). <strong>Default:</strong> 0.01.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.r2_min_au" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">r2_min_au</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">r2_min_au</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Lower plausibility bound on central heliocentric distance (AU). <strong>Default:</strong> 0.05.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.r2_max_au" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">r2_max_au</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">r2_max_au</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Upper plausibility bound on central heliocentric distance (AU). <strong>Default:</strong> 200.0.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.aberth_max_iter" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">aberth_max_iter</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">aberth_max_iter</span><span class="p">:</span> <span class="n"><span title="int">int</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Maximum iterations for the Aberth–Ehrlich polynomial solver. <strong>Default:</strong> 50.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.aberth_eps" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">aberth_eps</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">aberth_eps</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Convergence tolerance for the Aberth solver. <strong>Default:</strong> 1.0e-6.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.kepler_eps" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">kepler_eps</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">kepler_eps</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Tolerance used by the universal Kepler solver in velocity correction. <strong>Default:</strong> 1e3 * f64::EPSILON.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.max_tested_solutions" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">max_tested_solutions</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">max_tested_solutions</span><span class="p">:</span> <span class="n"><span title="int">int</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Cap on admissible Gauss solutions kept after root finding. <strong>Default:</strong> 3.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.newton_eps" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">newton_eps</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">newton_eps</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Absolute tolerance for Newton–Raphson inner solves. <strong>Default:</strong> 1.0e-10.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.newton_max_it" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">newton_max_it</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">newton_max_it</span><span class="p">:</span> <span class="n"><span title="int">int</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Maximum iterations for Newton–Raphson inner solves. <strong>Default:</strong> 50.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.root_imag_eps" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">root_imag_eps</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">root_imag_eps</span><span class="p">:</span> <span class="n"><span title="float">float</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Max imaginary part magnitude to treat a complex root as real. <strong>Default:</strong> 1.0e-6.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.batch_size" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">batch_size</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">batch_size</span><span class="p">:</span> <span class="n"><span title="int">int</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Batch size for parallel trajectory processing. Only effective if the crate
+is compiled with the <code>parallel</code>/<code>rayon</code> feature. <strong>Default:</strong> 4.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="py_outfit.iod_params.IODParams.do_parallel" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">do_parallel</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">do_parallel</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Whether this configuration requests parallel execution in higher-level APIs.</p>
+
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>This is carried alongside <code>IODParams</code> in the Python binding and consumed by callers
+(the core Rust struct is independent of this advisory flag).</p>
+</details>
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParams.builder" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">builder</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">builder</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Create a new <code>IODParamsBuilder</code> initialized with the <strong>Default</strong> values listed above.</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">RETURNS</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <span class="doc-returns-annotation">
+                    <code><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></code>
+                </span>
+            </td>
+            <td class="doc-returns-details">
+              <div class="doc-md-description">
+                <p>A fresh builder to customize and produce an <code>IODParams</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="py_outfit.iod_params.IODParamsBuilder" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">py_outfit.iod_params.IODParamsBuilder</span>
+
+
+</h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">IODParamsBuilder</span><span class="p">()</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents first">
+
+
+        <p>Fluent builder for <code>IODParams</code>.</p>
+
+
+<details class="defaults" open>
+  <summary>Defaults</summary>
+  <p>The builder starts with the <strong>exact</strong> defaults documented in <code>IODParams</code> (see there).</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.n_noise_realizations" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">n_noise_realizations</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">n_noise_realizations</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="int">int</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the number of Monte Carlo perturbations per original triplet. <strong>Default:</strong> 20.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.noise_scale" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">noise_scale</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">noise_scale</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the scale applied to nominal astrometric uncertainties. <strong>Default:</strong> 1.0.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.extf" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">extf</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">extf</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the extrapolation factor for the RMS window (negative ⇒ broad fallback).
+Window formula: <code>dt_window = (triplet span) × v</code>, then clamp <code>≥ dtmax</code>.
+<strong>Default:</strong> -1.0.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.dtmax" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">dtmax</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">dtmax</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the minimum RMS window size (days). <strong>Default:</strong> 30.0.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.dt_min" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">dt_min</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">dt_min</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the minimum allowed span (days) between first and last obs in a triplet.
+<strong>Default:</strong> 0.03.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.dt_max_triplet" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">dt_max_triplet</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">dt_max_triplet</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the maximum allowed span (days) within a triplet. <strong>Default:</strong> 150.0.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.optimal_interval_time" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">optimal_interval_time</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">optimal_interval_time</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the target intra-triplet spacing (days). <strong>Default:</strong> 20.0.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.max_obs_for_triplets" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">max_obs_for_triplets</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">max_obs_for_triplets</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="int">int</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Cap observations used to build triplets (uniform downsampling if exceeded). <strong>Default:</strong> 100.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.max_triplets" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">max_triplets</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">max_triplets</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="int">int</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Cap the number of triplets evaluated per trajectory. <strong>Default:</strong> 10.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.gap_max" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">gap_max</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">gap_max</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the maximum intra-batch time gap (days) for RMS calibration. <strong>Default:</strong> 8/24.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.max_ecc" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">max_ecc</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">max_ecc</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the maximum eccentricity accepted. <strong>Default:</strong> 5.0.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.max_perihelion_au" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">max_perihelion_au</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">max_perihelion_au</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the maximum perihelion distance (AU). <strong>Default:</strong> 1.0e3.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.min_rho2_au" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">min_rho2_au</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">min_rho2_au</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the minimum topocentric distance at the central epoch (AU). <strong>Default:</strong> 0.01.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.r2_min_au" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">r2_min_au</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">r2_min_au</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the lower plausibility bound on heliocentric distance (AU). <strong>Default:</strong> 0.05.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.r2_max_au" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">r2_max_au</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">r2_max_au</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the upper plausibility bound on heliocentric distance (AU). <strong>Default:</strong> 200.0.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.aberth_max_iter" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">aberth_max_iter</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">aberth_max_iter</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="int">int</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the maximum iterations for the Aberth–Ehrlich solver. <strong>Default:</strong> 50.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.aberth_eps" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">aberth_eps</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">aberth_eps</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the Aberth convergence tolerance. <strong>Default:</strong> 1.0e-6.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.kepler_eps" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">kepler_eps</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">kepler_eps</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the universal Kepler solver tolerance. <strong>Default:</strong> 1e3 * f64::EPSILON.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.max_tested_solutions" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">max_tested_solutions</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">max_tested_solutions</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="int">int</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Cap the number of admissible solutions retained. <strong>Default:</strong> 3.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.newton_eps" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">newton_eps</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">newton_eps</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the Newton–Raphson absolute tolerance. <strong>Default:</strong> 1.0e-10.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.newton_max_it" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">newton_max_it</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">newton_max_it</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="int">int</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the maximum Newton–Raphson iterations. <strong>Default:</strong> 50.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.root_imag_eps" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">root_imag_eps</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">root_imag_eps</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="float">float</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the imaginary-part threshold to accept nearly-real roots. <strong>Default:</strong> 1.0e-6.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.batch_size" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">batch_size</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">batch_size</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n"><span title="int">int</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the batch size for parallel scheduling. Effective only when the crate
+is compiled with the <code>parallel</code>/<code>rayon</code> feature. <strong>Default:</strong> 4.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.do_parallel" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">do_parallel</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">do_parallel</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Request parallel execution (Rayon-backed) in higher-level APIs that accept it.
+(Advisory flag carried by the Python binding; core Rust struct is independent.)</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.do_sequential" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">do_sequential</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">do_sequential</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParamsBuilder" href="#py_outfit.iod_params.IODParamsBuilder">IODParamsBuilder</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Request sequential execution in higher-level APIs that accept it.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="py_outfit.iod_params.IODParamsBuilder.build" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">build</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">build</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParams" href="#py_outfit.iod_params.IODParams">IODParams</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Finalize and materialize an immutable <code>IODParams</code> with the chosen settings.</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">RETURNS</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <span class="doc-returns-annotation">
+                    <code><a class="autorefs autorefs-internal" title="py_outfit.iod_params.IODParams" href="#py_outfit.iod_params.IODParams">IODParams</a></code>
+                </span>
+            </td>
+            <td class="doc-returns-details">
+              <div class="doc-md-description">
+                <p>A read-only <code>IODParams</code> instance with the configured parameters.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "navigation.sections"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
