@@ -106,7 +106,7 @@ https://github.com/FusRoman/pyOutfit/blob/f58071657e896f4dc2cf9ee3f7b894b81593c3
 
 ## 🔧 Working with `IODParams`
 
-https://github.com/FusRoman/pyOutfit/blob/f58071657e896f4dc2cf9ee3f7b894b81593c311/docs/tutorials/tutorial_snippets/iod_params_parallel.py#L1-L11
+https://github.com/FusRoman/pyOutfit/blob/f58071657e896f4dc2cf9ee3f7b894b81593c311/docs/tutorials/tutorial_snippets/iod_params_parallel.py#L1-L10
 
 ## 📊 Accessing Observations
 
