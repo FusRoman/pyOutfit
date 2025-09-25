@@ -46,6 +46,7 @@ plugins:
 nav:
   - Home: index.md
   - Installation: installation.md
+  - Quickstart: quickstart.md
   - Tutorials:
       - pyOutfit Environment: tutorials/pyoutfit_environment.md
       - IODParams: tutorials/iod_params.md
