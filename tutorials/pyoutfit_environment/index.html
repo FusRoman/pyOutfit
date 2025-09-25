@@ -1101,7 +1101,7 @@
 <h2 id="example-snippets">Example snippets</h2>
 <p>Below are non-executable snippets demonstrating the expected structure of a session. The code is provided in separate files and included here for readability.</p>
 <h3 id="environment-initialization">Environment initialization</h3>
-<div class="language-py highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">environment initialization</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<div class="language-py highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Minimal environment setup</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
 <span class="normal"><a href="#__codelineno-0-2">2</a></span>
 <span class="normal"><a href="#__codelineno-0-3">3</a></span>
 <span class="normal"><a href="#__codelineno-0-4">4</a></span>
@@ -1123,7 +1123,7 @@
 <li>The constructor accepts two strings: an ephemerides selector and an astrometric error model. The ephemerides selector uses the format "{source}:{version}" and recognizes two backends: "horizon" for legacy JPL DE binaries and "naif" for NAIF SPK/DAF kernels. Examples include "horizon:DE440" and "naif:DE440". The resolved file is stored under the OS cache (e.g., ~/.cache/outfit_cache/jpl_ephem/…), and when the build enables JPL downloads, a missing file is fetched automatically; otherwise an error is raised. The error model selects per‑site RA/DEC bias and RMS tables used during orbit determination. Supported names include "FCCT14", "VFCC17", and "CBM10"; unknown names default to "FCCT14". These two parameters define the numerical and physical context shared by ingestion and IOD routines.</li>
 </ol>
 <h3 id="observer-registration">Observer registration</h3>
-<div class="language-py highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">environment initialization</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
+<div class="language-py highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Observer registration</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
 <span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
@@ -1166,7 +1166,7 @@
 <h3 id="fetching-an-observer-from-an-mpc-code">Fetching an observer from an MPC code</h3>
 <p>Often you already know the MPC observatory code (e.g. "I41" for ZTF at Palomar, "807" for Cerro Paranal, etc.). Instead of manually constructing an <code>Observer</code>, you can request a ready‑made instance from the internal registry using <code>get_observer_from_mpc_code</code>.</p>
 <p>On its first use the environment fetches and parses the MPC Observatory Codes HTML page (ObsCodes list) from the Minor Planet Center. The resulting table is cached in-memory for the remainder of the process, so subsequent lookups do not re-contact the network. If the network is unavailable on the very first lookup, an exception will be raised. Unknown codes also raise a <code>ValueError</code> (wrapping a Rust error). Retrieved observers can be used immediately for ingestion; explicit re‑registration is not required unless you are mixing them with custom user-defined sites.</p>
-<div class="language-py highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Environment initialization</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<div class="language-py highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Fetch from MPC</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
 <span class="normal"><a href="#__codelineno-2-2">2</a></span>
 <span class="normal"><a href="#__codelineno-2-3">3</a></span>
 <span class="normal"><a href="#__codelineno-2-4">4</a></span>
