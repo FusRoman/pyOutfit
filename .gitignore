@@ -9,3 +9,4 @@ test_local.py
 Agents.md
 *.so
 Makefile
+site/
