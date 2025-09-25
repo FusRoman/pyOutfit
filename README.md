@@ -100,90 +100,28 @@ Install Rust if needed: https://rustup.rs
 
 ## 🧪 Minimal End‑to‑End Example
 
-Below: create an environment, register an observer, ingest synthetic observations, configure Gauss IOD, and estimate orbits.
+Below: create an environment, register an observer, ingest observations, configure Gauss IOD, and estimate a single trajectory's orbit. The code is imported directly from maintained tutorial snippets (no duplication).
 
-```python
-import numpy as np
-from py_outfit import PyOutfit, Observer, IODParams, TrajectorySet
+--8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:env_init"
+--8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:observer_init"
+--8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:minimal_data"
+--8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:build_trajectoryset"
+--8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:configure_iodparams"
+--8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:estimate_orbit"
+--8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:inspect_results"
 
-# 1. Global environment (ephemeris + error model)
-env = PyOutfit("horizon:DE440", "FCCT14")
+### Batch estimation across multiple trajectories
 
-# 2. Define (or fetch) an observer
-# NOTE: elevation is in kilometers (km), not meters
-obs = Observer(longitude=12.345, latitude=-5.0, elevation=1.0, name="DemoSite", ra_accuracy=None, dec_accuracy=None)
-env.add_observer(obs)
-print(env.show_observatories())
-
-# 3. Fake observation batch for TWO trajectories (IDs 10 & 11)
-trajectory_id = np.array([10,10,10, 11,11,11], dtype=np.uint32)
-ra_deg        = np.array([10.0,10.01,10.02, 180.0,180.02,180.05])  # degrees
-dec_deg       = np.array([ 5.0, 5.01, 5.015, -10.0,-10.02,-10.03])  # degrees
-times_mjd_tt  = np.array([60000.0,60000.01,60000.03, 60000.0,60000.02,60000.05])
-
-# 4. Build trajectory set (degree ingestion path auto-converts to radians)
-ts = TrajectorySet.from_numpy_degrees(
-	env,
-	trajectory_id,
-	ra_deg,
-	dec_deg,
-	error_ra_arcsec=0.3,
-	error_dec_arcsec=0.3,
-	mjd_tt=times_mjd_tt,
-	observer=obs,
-)
-print(ts, "Trajectories:", ts.number_of_trajectories(), "Total obs:", ts.total_observations())
-
-# 5. Configure IOD parameters (builder pattern + parallel disabled for small sample)
-params = (IODParams.builder()
-		  .max_triplets(200)
-		  .gap_max(2.0)
-		  .do_sequential()  # or .do_parallel() for large data
-		  .build())
-
-# 6. Estimate orbits (returns (ok_dict, err_dict))
-ok, errors = ts.estimate_all_orbits(env, params, seed=42)
-print("Success keys:", list(ok.keys()))
-print("Errors:", errors)
-
-# 7. Inspect one result
-traj_id, (gauss_res, rms) = next(iter(ok.items()))
-print("Trajectory", traj_id, "elements type:", gauss_res.elements_type())
-kep = gauss_res.keplerian()
-if kep is not None:
-	# Example access (fields depend on elements family)
-	print("Keplerian reference epoch (MJD):", kep.reference_epoch)
-	print("Eccentricity:", kep.eccentricity)
-```
+--8<-- "docs/tutorials/tutorial_snippets/trajectories_estimate_all.py:batch_env"
+--8<-- "docs/tutorials/tutorial_snippets/trajectories_estimate_all.py:batch_build_and_estimate"
 
 ## 🔧 Working with `IODParams`
 
-```python
-from py_outfit import IODParams
-
-default_params = IODParams()            # All defaults
-print(default_params.max_triplets)      # Read-only getter
-
-custom = (IODParams.builder()
-		  .max_triplets(500)
-		  .aberth_eps(1e-14)
-		  .do_parallel()               # enable multi-threaded batches
-		  .build())
-print("Parallel:", custom.do_parallel)
-```
+--8<-- "docs/tutorials/tutorial_snippets/readme_snippets.py:iodparams_builder"
 
 ## 📊 Accessing Observations
 
-```python
-traj_keys = ts.keys()          # list of IDs
-first_key = traj_keys[0]
-traj = ts[first_key]           # Observations object
-print(len(traj), "observations")
-mjd, ra, dec, sra, sdec = traj.to_numpy()  # NumPy arrays
-
-for (t, r, d, sr, sd) in traj:             # iteration yields tuples
-	pass
-```
+--8<-- "docs/tutorials/tutorial_snippets/readme_snippets.py:observations_access"
 
 ## 🗂 API Surface (Python Names)
 
@@ -207,28 +145,11 @@ for (t, r, d, sr, sd) in traj:             # iteration yields tuples
 
 ## 🧭 Error Handling Pattern
 
-```python
-try:
-	env = PyOutfit("horizon:DE440", "VFCC17")
-except RuntimeError as e:
-	print("Failed to init environment:", e)
-```
+--8<-- "docs/tutorials/tutorial_snippets/readme_snippets.py:error_handling"
 
 ## 🧑‍💻 Development Workflow
 
-```bash
-# 1. (one time) Setup
-pip install maturin pytest
-
-# 2. Rebuild after Rust changes
-maturin develop
-
-# 3. Run Python tests
-pytest -q
-
-# 4. Optional: run Rust unit tests (if added)
-cargo test
-```
+--8<-- "docs/tutorials/tutorial_snippets/readme_snippets.py:development_workflow"
 
 ### Project Layout
 

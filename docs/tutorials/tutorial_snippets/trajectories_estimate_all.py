@@ -3,6 +3,7 @@ from py_outfit import PyOutfit, TrajectorySet, IODParams, Observer
 import numpy as np
 from astropy.time import Time
 
+# --8<-- [start:batch_env]
 env = PyOutfit("horizon:DE440", "FCCT14")
 obs = Observer(
     0.0, 0.0, 1.0, "DemoSite", np.deg2rad(0.3 / 3600.0), np.deg2rad(0.3 / 3600.0)
@@ -93,6 +94,9 @@ jd_utc = np.array(
 t_utc = Time(jd_utc, format="jd", scale="utc")
 mjd_tt = t_utc.tt.mjd.astype(np.float64)
 
+# --8<-- [end:batch_env]
+
+# --8<-- [start:batch_build_and_estimate]
 ts = TrajectorySet.from_numpy_degrees(
     env,
     trajectory_id,
@@ -109,3 +113,4 @@ ok, errors = ts.estimate_all_orbits(env, params, seed=42)
 
 print("ok keys:", list(ok.keys()))
 print("errors:", errors)
+# --8<-- [end:batch_build_and_estimate]
