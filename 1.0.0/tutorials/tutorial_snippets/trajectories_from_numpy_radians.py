@@ -1,0 +1,26 @@
+# Build a TrajectorySet from radians (zero-copy) and MJD(TT)
+import numpy as np
+from py_outfit import PyOutfit, TrajectorySet, Observer
+
+env = PyOutfit("horizon:DE440", "FCCT14")
+obs = Observer(0.0, 0.0, 1.0, "DemoSite", np.deg2rad(0.3/3600.0), np.deg2rad(0.3/3600.0))
+env.add_observer(obs)
+
+trajectory_id = np.array([10, 10, 10, 11, 11, 11], dtype=np.uint32)
+ra_deg        = np.array([10.0, 10.01, 10.02, 180.0, 180.02, 180.05])
+dec_deg       = np.array([ 5.0,  5.01,  5.015, -10.0, -10.02, -10.03])
+ra_rad        = np.deg2rad(ra_deg)
+dec_rad       = np.deg2rad(dec_deg)
+mjd_tt        = np.array([60000.0, 60000.01, 60000.03, 60000.0, 60000.02, 60000.05])
+
+# Zero-copy path when inputs are already radians
+ts = TrajectorySet.from_numpy_radians(
+    env,
+    trajectory_id,
+    ra_rad,
+    dec_rad,
+    error_ra_rad=np.deg2rad(0.3 / 3600.0),
+    error_dec_rad=np.deg2rad(0.3 / 3600.0),
+    mjd_tt=mjd_tt,
+    observer=obs,
+)
