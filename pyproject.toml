@@ -23,10 +23,10 @@ readme = "README.md"
 license = { file = "LICENSE" }
 keywords = ["astronomy", "orbit-determination", "rust", "pyo3", "maturin"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
-    "License :: CeCILL-C Free Software License Agreement (CeCILL-C)",
+    "License :: CeCILL-C Free Software License Agreement (CECILL-C)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.12",
