@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this repository follows semantic versioning.
 
-## [1.0.0] - 2025-09-17
+## [1.0.0] - 2025-09-25
 ### Added
 - Initial stable release of pyOutfit (Rust core with Python bindings).
 - Reimplementation of OrbFit IOD functionality in Rust.
