@@ -1,3 +1,4 @@
+# --8<-- [start: observer_simple_init]
 # Observer registration example for documentation inclusion
 from py_outfit import PyOutfit, Observer
 
@@ -16,8 +17,17 @@ obs = Observer(
 # Register the observer in the environment
 env.add_observer(obs)
 
-# Alternatively, retrieve by MPC code and then register
-# mpc_obs = env.get_observer_from_mpc_code("807")
-# env.add_observer(mpc_obs)
-
+# On the first use, you will see only the added custom site from below
 print(env.show_observatories())
+# --8<-- [end: observer_simple_init]
+
+# --8<-- [start: from_mpc_code]
+# Obtain the ZTF (Palomar) observatory by its MPC code
+ztf = env.get_observer_from_mpc_code("I41")  # returns an Observer instance
+print(ztf)  # human-readable summary (code, name, geodetic position)
+
+# Listing available observatories (optional helper)
+# Now that the MPC code lookup has been used, the internal registry
+# has been populated with all MPC observatories, so the output is much longer.
+print(env.show_observatories())  # table of currently known / registered sites
+# --8<-- [end: from_mpc_code]

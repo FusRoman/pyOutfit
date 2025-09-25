@@ -1,6 +1,4 @@
 # Convert between orbital element families
-import os, sys
-sys.path.append(os.path.dirname(__file__))
 from common_tuto import run_iod
 
 ok, _ = run_iod()
