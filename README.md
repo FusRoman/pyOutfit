@@ -106,32 +106,11 @@ https://github.com/FusRoman/pyOutfit/blob/f58071657e896f4dc2cf9ee3f7b894b81593c3
 
 ## 🔧 Working with `IODParams`
 
-```python
-from py_outfit import IODParams
-
-default_params = IODParams()            # All defaults
-print(default_params.max_triplets)      # Read-only getter
-
-custom = (IODParams.builder()
-		  .max_triplets(500)
-		  .aberth_eps(1e-14)
-		  .do_parallel()               # enable multi-threaded batches
-		  .build())
-print("Parallel:", custom.do_parallel)
-```
+https://github.com/FusRoman/pyOutfit/blob/f58071657e896f4dc2cf9ee3f7b894b81593c311/docs/tutorials/tutorial_snippets/iod_params_parallel.py#L1-L11
 
 ## 📊 Accessing Observations
 
-```python
-traj_keys = ts.keys()          # list of IDs
-first_key = traj_keys[0]
-traj = ts[first_key]           # Observations object
-print(len(traj), "observations")
-mjd, ra, dec, sra, sdec = traj.to_numpy()  # NumPy arrays
-
-for (t, r, d, sr, sd) in traj:             # iteration yields tuples
-	pass
-```
+https://github.com/FusRoman/pyOutfit/blob/f58071657e896f4dc2cf9ee3f7b894b81593c311/docs/tutorials/tutorial_snippets/trajectories_estimate_single.py#L108-L111
 
 ## 🗂 API Surface (Python Names)
 
