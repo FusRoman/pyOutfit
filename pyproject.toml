@@ -40,8 +40,6 @@ classifiers = [
     "Typing :: Typed",
 ]
 
-[project.optional-dependencies]
-examples = ["matplotlib>=3.10.6"]
 [tool.pdm]
 distribution = false
 
