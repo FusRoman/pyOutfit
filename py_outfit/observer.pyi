@@ -5,10 +5,8 @@ class Observer:
     """
     Observatory/site descriptor.
 
-    Instances are typically obtained from:
-    * `PyOutfit.get_observer_from_mpc_code(...)`
-    or built directly via the constructor below and then registered with:
-    * `PyOutfit.add_observer(...)`
+    Instances are typically obtained from `PyOutfit.get_observer_from_mpc_code(...)` 
+    or built directly via the constructor below and then registered with `PyOutfit.add_observer(...)`
 
     Notes
     ----------
@@ -33,7 +31,7 @@ class Observer:
         """
         Create a new `Observer`.
 
-        Arguments
+        Parameters
         -----------------
         * `longitude`: Geodetic longitude **in degrees** (east-positive).
         * `latitude`: Geodetic latitude **in degrees**.
@@ -42,9 +40,10 @@ class Observer:
         * `ra_accuracy`: Optional 1-sigma Right Ascension accuracy (radians).
         * `dec_accuracy`: Optional 1-sigma Declination accuracy (radians).
 
-        Return
+        Returns
         ----------
-        * A new `Observer` handle (opaque in Python).
+        Observer
+            A new `Observer` instance.
 
         Notes
         ----------

@@ -1,26 +1,10 @@
-from __future__ import annotations
-
-from dataclasses import dataclass
-from typing import Any, Dict, Iterable, Literal, Optional, Tuple, Union
-
-import numpy as np
-import pandas as pd
-
-from py_outfit import PyOutfit, IODParams, Observer, TrajectorySet
-from py_outfit import GaussResult
-from py_outfit import RADSEC
-
-Number = Union[int, float, np.number]
-ObjectID = Union[int, str, np.integer, np.str_]
-
-
 """
 Pandas accessor for batch Initial Orbit Determination (IOD) with Outfit.
 
 This module adds a `DataFrame.outfit` accessor exposing a vectorized entry-point
 to run **Gauss IOD** on a flat, columnar table of astrometric measurements.
 
-Quick start
+Examples
 -----------------
 >>> df = pd.DataFrame({
 ...     "tid":  [0, 0, 0, 1, 1, 1],
@@ -45,6 +29,20 @@ Design
   uncertainties in arcseconds; `"radians"` expects everything in radians.
 """
 
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any, Dict, Iterable, Literal, Optional, Tuple, Union
+
+import numpy as np
+import pandas as pd
+
+from py_outfit import PyOutfit, IODParams, Observer, TrajectorySet
+from py_outfit import GaussResult
+from py_outfit import RADSEC
+
+Number = Union[int, float, np.number]
+ObjectID = Union[int, str, np.integer, np.str_]
 
 @dataclass(frozen=True)
 class Schema:
@@ -79,11 +77,11 @@ def _ensure_float64(a: Iterable[Number]) -> np.ndarray:
     """
     Ensure a contiguous float64 NumPy array.
 
-    Arguments
+    Parameters
     -----------------
     * `a`: Any sequence/array-like of numeric values.
 
-    Return
+    Returns
     ----------
     * A C-contiguous `np.ndarray` with `dtype=np.float64`.
 
@@ -98,11 +96,11 @@ def _ensure_object_ids(a: Iterable[ObjectID]) -> np.ndarray:
     """
     Normalize a vector of object IDs for Outfit ingestion.
 
-    Arguments
+    Parameters
     -----------------
     * `a`: Sequence of IDs (integers or strings). `np.uint32` is supported.
 
-    Return
+    Returns
     ----------
     * `np.ndarray` with a stable dtype:
       - `np.uint32` for pure-integer inputs,
@@ -129,11 +127,11 @@ def _detect_element_set(
     """
     Infer the orbital element set from keys produced by `GaussResult.to_dict()`.
 
-    Arguments
+    Parameters
     -----------------
     * `d`: Dictionary exported from a `GaussResult` (native keys).
 
-    Return
+    Returns
     ----------
     * Literal string identifying the set: `"keplerian"`, `"equinoctial"`, or `"cometary"`.
 
@@ -156,11 +154,11 @@ def _rows_from_ok_map(ok: Dict[int | str, Tuple[GaussResult, float]]) -> pd.Data
     """
     Flatten the success map from `TrajectorySet.estimate_all_orbits` to a DataFrame.
 
-    Arguments
+    Parameters
     -----------------
     * `ok`: Mapping `object_id -> (GaussResult, rms)`.
 
-    Return
+    Returns
     ----------
     * `pd.DataFrame` with columns:
       - `object_id`, `variant` (`PrelimOrbit`|`CorrectedOrbit`),
@@ -194,11 +192,11 @@ def _rows_from_err_map(err: Dict[Any, str]) -> pd.DataFrame:
     """
     Flatten the error map to a diagnostic DataFrame.
 
-    Arguments
+    Parameters
     -----------------
     * `err`: Mapping `object_id -> error_message`.
 
-    Return
+    Returns
     ----------
     * `pd.DataFrame` with `object_id` and `error` columns (empty if no errors).
 
@@ -214,20 +212,18 @@ def _rows_from_err_map(err: Dict[Any, str]) -> pd.DataFrame:
 @pd.api.extensions.register_dataframe_accessor("outfit")
 class OutfitAccessor:
     """
-    Pandas accessor exposing `df.outfit.estimate_orbits(...)`.
+    Pandas accessor for running Gauss IOD from a DataFrame.
 
-    See also
-    ------------
-    * `TrajectorySet.estimate_all_orbits` – Batch Gauss IOD over trajectories.
-    * `IODParams` – Configure triplet selection, filters and tolerances.
-    * `Observer` – Optional default observer.
+    Use via the attribute accessor ``DataFrame.outfit``. It exposes
+    :meth:`estimate_orbits` to run a vectorized Initial Orbit Determination over
+    a flat table of astrometric measurements.
 
     Examples
-    -----------------
-    Basic usage (degrees + arcsec):
+    --------
+    Basic usage with degrees and arcseconds
     >>> out = df.outfit.estimate_orbits(env, params, observer, ra_error=0.5, dec_error=0.5)
 
-    Radians workflow:
+    Radians workflow
     >>> out = df.outfit.estimate_orbits(
     ...     env, params, observer,
     ...     ra_error=1e-6, dec_error=1e-6,
@@ -242,7 +238,7 @@ class OutfitAccessor:
         """
         Validate presence of the required columns.
 
-        Arguments
+        Parameters
         -----------------
         * `schema`: Column mapping to validate.
 
@@ -271,47 +267,78 @@ class OutfitAccessor:
         rng_seed: Optional[int] = None,
     ) -> pd.DataFrame:
         """
-        Run Gauss IOD from a flat DataFrame and return a row-per-object summary.
+        Run Gauss IOD on a flat astrometry table and return a one-row-per-object
+        summary.
 
-        The input DataFrame must contain at least:
-        - `schema.tid` (trajectory/object IDs, int or str),
-        - `schema.mjd` (MJD TT, float),
-        - `schema.ra`, `schema.dec` (angles).
+        The input DataFrame must at least provide a trajectory/object identifier,
+        Modified Julian Date in TT, and right ascension/declination angles. The
+        names of these columns are defined by `schema` (defaults are `tid`, `mjd`,
+        `ra`, `dec`).
 
-        Arguments
-        -----------------
-        * `env`: Configured `PyOutfit` engine (ephemerides, error model, observers).
-        * `params`: IOD configuration (triplet search, MC perturbations, filters, tolerances).
-        * `observer`: Default `Observer` for all rows (single-station use case).
-        * `ra_error`: RA uncertainty. If `units='degrees'`, **arcseconds**; if `units='radians'`, **radians**.
-        * `dec_error`: DEC uncertainty. Same unit convention as `ra_error`.
-        * `schema`: Column mapping for the current DataFrame.
-        * `units`: `"degrees"` (RA/DEC in degrees; uncertainties in arcsec) or `"radians"`.
-        * `rng_seed`: Optional seed for deterministic randomized internals.
-
-        Return
+        Parameters
         ----------
-        * `pd.DataFrame` where each **successful** object produces one row with:
-          - `object_id`, `variant` (`PrelimOrbit`|`CorrectedOrbit`),
-          - `element_set` (`keplerian`|`equinoctial`|`cometary`),
-          - `rms`, and the element fields.
-          If there are **errors**, they are returned as additional rows with
-          `status='error'` and an `error` column.
+        env : PyOutfit
+            Configured computation engine, including ephemerides, the error model
+            and the available observers.
+        params : IODParams
+            IOD configuration controlling triplet search, Monte Carlo
+            perturbations, filters, and tolerances.
+        observer : Observer
+            Default observer applied to all rows. This covers the common
+            single-station use case.
+        ra_error : float
+            Uncertainty on right ascension. When `units="degrees"`, the value is
+            interpreted in arcseconds; when `units="radians"`, the value is in
+            radians.
+        dec_error : float
+            Uncertainty on declination. Follows the same unit convention as
+            `ra_error`.
+        schema : Schema, optional
+            Column mapping for the current DataFrame. Use this to adapt to
+            non-standard column names. The default expects `tid`, `mjd`, `ra`,
+            and `dec`.
+        units : {"degrees", "radians"}, default "degrees"
+            Angle units for `ra`/`dec` and the corresponding uncertainties.
+            Degrees imply RA/DEC are in degrees and uncertainties are in
+            arcseconds. Radians imply both values and uncertainties are already
+            expressed in radians.
+        rng_seed : int or None, optional
+            Optional seed to make randomized internals deterministic.
+
+        Returns
+        -------
+        pd.DataFrame
+            A summary DataFrame with one row per object containing the RMS value,
+            the detected orbital element set, the orbit variant, and the native
+            orbital elements returned by the engine. The `object_id` column
+            mirrors the original identifier from `schema.tid`. When some
+            trajectories fail, additional rows are included with `object_id` and
+            an `error` message; successful rows include `status="ok"`.
 
         Raises
-        ----------
-        * `ValueError`:
-          - If required columns are missing.
-          - If `units` is not one of `"degrees"|"radians"`.
+        ------
+        ValueError
+            Raised when required columns are missing in the DataFrame, or when
+            `units` is not one of {"degrees", "radians"}.
 
         Notes
-        ----------
-        * Ingestion is **vectorized** (no Python‐level grouping loops).
-        * For `units='degrees'`, `ra_error`/`dec_error` are converted on the fly:
-          arcsec → radians using `RADSEC`.
-        * If some objects fail IOD, you can filter with `df.query("status == 'ok'")`.
-        * Multi-observer or per-row observatory support can be added by extending
-          the `TrajectorySet.from_numpy_*` builder to accept vectorized observers.
+        -----
+        Ingestion is vectorized and avoids Python-level grouping. For
+        `units="degrees"`, `ra_error` and `dec_error` are converted from
+        arcseconds to radians using `RADSEC`. If needed, multi-observer or
+        per-row observatory support can be added by extending the
+        `TrajectorySet.from_numpy_*` builder to accept vectorized observers.
+
+        See Also
+        --------
+        - `TrajectorySet.estimate_all_orbits`:
+            Batch Gauss IOD over trajectories.
+
+        - `GaussResult.to_dict`:
+            Native orbital element names used in the output.
+
+        - `Schema`:
+            Column mapping used to interpret the input DataFrame.
         """
         # --- Validate input columns
         self._validate_schema(schema)

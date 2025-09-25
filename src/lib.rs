@@ -166,7 +166,7 @@ impl<T> IntoPyResult<T> for Result<T, outfit::outfit_errors::OutfitError> {
 /// * [`iod_params::IODParams`] – Tuning parameters for Gauss IOD.
 /// * [`trajectories::TrajectorySet`] – Helpers to load observations.
 /// * [`observer::Observer`] – Observatory handle used by `PyOutfit`.
-#[pyclass]
+#[pyclass(module = "py_outfit")]
 pub struct PyOutfit {
     inner: Outfit,
 }

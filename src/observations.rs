@@ -7,6 +7,13 @@ use pyo3::{
 };
 
 use outfit::observations::display::ObservationsDisplayExt;
+use outfit::observations::observations_ext::ObservationIOD;
+use rand::rngs::StdRng;
+use rand::SeedableRng;
+
+use crate::{
+    iod_gauss::GaussResult as PyGaussResult, iod_params::IODParams, IntoPyResult, PyOutfit,
+};
 
 type ObsArrays<'py> = (
     Bound<'py, PyArray1<f64>>,
@@ -319,5 +326,55 @@ impl Observations {
             out.append(tup)?;
         }
         Ok(out)
+    }
+
+    /// Estimate the best orbit for this single set of observations.
+    ///
+    /// Arguments
+    /// -----------------
+    /// * `env` : Global environment providing ephemerides, observers, and the error model.
+    /// * `params` : Configuration for Gauss IOD, including triplet constraints, noise realizations,
+    ///     filters, and numerical tolerances.
+    /// * `seed`: Optional RNG seed to make the Monte Carlo path deterministic. When not provided,
+    ///     a random seed from the OS is used.
+    ///
+    /// Returns
+    /// ----------
+    /// (GaussResult, float)
+    ///     The best preliminary or corrected orbit found by the engine and its RMS score
+    ///     evaluated over the selected arc. The RMS is expressed in radians.
+    ///
+    /// Notes
+    /// ----------
+    /// The method mirrors the batch API used by `TrajectorySet.estimate_all_orbits` but operates
+    /// on a single trajectory. Internally it applies batch RMS corrections, generates feasible
+    /// triplets, samples noisy realizations, and returns the lowest-RMS candidate.
+    #[pyo3(text_signature = "($self, env, params, seed=None)")]
+    pub fn estimate_best_orbit(
+        &mut self,
+        py: Python<'_>,
+        env: &PyOutfit,
+        params: &IODParams,
+        seed: Option<u64>,
+    ) -> PyResult<(PyGaussResult, f64)> {
+        // RNG setup (deterministic when seed is provided)
+        let mut rng: StdRng = match seed {
+            Some(s) => StdRng::seed_from_u64(s),
+            None => StdRng::from_os_rng(),
+        };
+
+        // Heavy computation without the GIL
+        let res = py.detach(|| {
+            self.inner.estimate_best_orbit(
+                &env.inner,
+                &env.inner.error_model,
+                &mut rng,
+                &params.inner,
+            )
+        });
+
+        // Map OutfitError -> PyErr and convert result to Python wrappers
+        let (g, rms) = res.into_py()?;
+        Ok((PyGaussResult::from(g), rms))
     }
 }

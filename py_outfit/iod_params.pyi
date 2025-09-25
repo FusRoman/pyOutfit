@@ -3,84 +3,90 @@ class IODParams:
     Configuration for Gauss Initial Orbit Determination (IOD).
 
     Purpose
-    -----------------
-    Centralizes all tunable parameters used by the Gauss pipeline to:
-    - Select and filter candidate observation triplets (time spans, downsampling, maximum counts),
-    - Apply Monte Carlo perturbations to simulate astrometric noise,
-    - Enforce physical plausibility constraints (eccentricity, perihelion, distance bounds, geometry),
-    - Adjust numerical tolerances for Newton–Raphson and root filtering,
-    - Control the RMS evaluation time window over the observation arc,
-    - Control Gauss polynomial solving (Aberth iterations/eps; real-root acceptance),
-    - Cap the number of admissible solutions scanned.
+    -------
+    This configuration centralizes all tunable parameters used by the Gauss pipeline.
+    It covers candidate triplet selection, Monte Carlo perturbations, physical and
+    numerical filters, solver tolerances, and RMS evaluation.
+    The objective is to allow fine-grained control over the Gauss IOD process in a
+    single container object.
 
-    Pipeline overview (context)
+    Pipeline overview
     -----------------
-    1) Triplet generation — constrained by `dt_min`, `dt_max_triplet`, `optimal_interval_time`.
-       Oversized datasets may be downsampled to `max_obs_for_triplets` before triplet selection.
-    2) Monte Carlo perturbation — each triplet is expanded into `n_noise_realizations` copies
-       drawn from Gaussian perturbations scaled by `noise_scale`.
-    3) Orbit computation & filtering — candidate orbits are produced by the Gauss solver and
-       filtered by physical bounds (`max_ecc`, `max_perihelion_au`, `r2_min_au`, `r2_max_au`,
-       `min_rho2_au`) and numerical criteria (`newton_eps`, `newton_max_it`, `root_imag_eps`,
-       `aberth_max_iter`, `aberth_eps`, `kepler_eps`). Up to `max_tested_solutions` are retained.
-    4) RMS evaluation — candidates are scored by RMS residuals in a window derived from
-       `extf × (triplet span)` and clamped to at least `dtmax`. Lowest RMS wins.
+    The pipeline proceeds in four main stages:
+
+    1. Triplet generation. Candidate observation triplets are constrained by
+    `dt_min`, `dt_max_triplet`, and `optimal_interval_time`. Oversized datasets
+    may be downsampled to `max_obs_for_triplets` before selection.
+
+    2. Monte Carlo perturbation. Each triplet is expanded into multiple noisy copies
+    (`n_noise_realizations`) drawn from Gaussian perturbations scaled by
+    `noise_scale`.
+
+    3. Orbit computation and filtering. Candidate orbits are produced by the Gauss
+    solver and filtered by physical plausibility (`max_ecc`, `max_perihelion_au`,
+    `r2_min_au`, `r2_max_au`, `min_rho2_au`) and numerical tolerances
+    (`newton_eps`, `newton_max_it`, `root_imag_eps`, `aberth_max_iter`,
+    `aberth_eps`, `kepler_eps`). A maximum of `max_tested_solutions` is retained.
+
+    4. RMS evaluation. Candidates are scored by RMS residuals in a time window
+    derived from `extf × (triplet span)` and clamped to at least `dtmax`. The
+    candidate with the lowest RMS is selected.
 
     Defaults
-    -----------------
-    The following are the **exact** default values (Rust `Default`):
-    - Triplet / MC:
-      * `n_noise_realizations`: 20
-      * `noise_scale`: 1.0
-      * `extf`: -1.0  (negative means “broad fallback window”; see Notes)
-      * `dtmax`: 30.0  (days)
-      * `dt_min`: 0.03  (days)
-      * `dt_max_triplet`: 150.0  (days)
-      * `optimal_interval_time`: 20.0  (days)
-      * `max_obs_for_triplets`: 100
-      * `max_triplets`: 10
-      * `gap_max`: 8/24  (days; 8 hours)
+    --------
+    The default values are as follows (matching the Rust `Default` implementation).
 
-    - Physical filters:
-      * `max_ecc`: 5.0
-      * `max_perihelion_au`: 1.0e3
-      * `min_rho2_au`: 0.01  (AU)
+    1. Triplet / Monte Carlo parameters:
+        - `n_noise_realizations` : 20
+        - `noise_scale`          : 1.0
+        - `extf`                 : -1.0   (negative = broad fallback window)
+        - `dtmax`                : 30.0   (days)
+        - `dt_min`               : 0.03   (days)
+        - `dt_max_triplet`       : 150.0  (days)
+        - `optimal_interval_time`: 20.0   (days)
+        - `max_obs_for_triplets` : 100
+        - `max_triplets`         : 10
+        - `gap_max`              : 8/24   (days; 8 hours)
 
-    - Heliocentric r2 bounds:
-      * `r2_min_au`: 0.05  (AU)
-      * `r2_max_au`: 200.0  (AU)
+    2. Physical filters:
+        - `max_ecc`           : 5.0
+        - `max_perihelion_au` : 1.0e3
+        - `min_rho2_au`       : 0.01   (AU)
 
-    - Gauss polynomial / solver:
-      * `aberth_max_iter`: 50
-      * `aberth_eps`: 1.0e-6
-      * `kepler_eps`: 1e3 * f64::EPSILON  (≈ 2.22e-13 on 64-bit IEEE754)
+    3. Heliocentric r2 bounds:
+        - `r2_min_au` : 0.05   (AU)
+        - `r2_max_au` : 200.0  (AU)
 
-    - Numerics:
-      * `newton_eps`: 1.0e-10
-      * `newton_max_it`: 50
-      * `root_imag_eps`: 1.0e-6
+    4. Polynomial solver / numerics:
+        - `aberth_max_iter` : 50
+        - `aberth_eps`      : 1.0e-6
+        - `kepler_eps`      : ≈ 2.22e-13 (1e3 × machine epsilon)
+        - `newton_eps`      : 1.0e-10
+        - `newton_max_it`   : 50
+        - `root_imag_eps`   : 1.0e-6
 
-    - Multi-threading (feature-gated in Rust):
-      * `batch_size`: 4  (only effective if the crate is built with `parallel/rayon`)
+    5. Parallelization:
+        - `batch_size` : 4  (only effective if compiled with parallel features)
+
 
     Notes
-    -----------------
-    - RMS window:
-        dt_window = (triplet_last − triplet_first) × extf,
-        then clamped so dt_window ≥ dtmax.
-      If `extf < 0`, the implementation uses a broad fallback (e.g., a multiple of the full dataset span).
-    - Geometry: `min_rho2_au` is a **topocentric** distance constraint (central epoch) to avoid
-      near-observer pathologies.
-    - Root selection: `r2_min_au ≤ r2_max_au` are plausibility bounds for the **central heliocentric distance**
-      used while selecting roots of the degree-8 distance polynomial.
-    - Typical constraints: `max_ecc ≥ 0`, `max_perihelion_au > 0`, `min_rho2_au > 0`,
-      `aberth_max_iter ≥ 1`, `aberth_eps > 0`, `kepler_eps > 0`, `newton_eps > 0`, `newton_max_it ≥ 1`,
-      `root_imag_eps ≥ 0`, `max_tested_solutions ≥ 1`.
+    -----
+    RMS evaluation window is computed as:
+    `dt_window = (last − first) × extf`, clamped so that `dt_window ≥ dtmax`.
+    If `extf < 0`, a broad fallback window is used (typically a multiple of the
+    dataset span).
 
-    See also
-    -----------------
-    * `TrajectorySet.estimate_all_orbits` — batch IOD entry point consuming these params.
-    * Gauss solver & results (`GaussResult`) in the Outfit core.
+    The parameter `min_rho2_au` applies a topocentric distance constraint at the
+    central epoch to avoid near-observer pathologies.
+
+    Bounds `r2_min_au ≤ r2_max_au` provide plausibility constraints for the
+    heliocentric distance when selecting roots of the degree-8 Gauss polynomial.
+
+    Typical constraints are:
+    `max_ecc ≥ 0`, `max_perihelion_au > 0`, `min_rho2_au > 0`,
+    `aberth_max_iter ≥ 1`, `aberth_eps > 0`, `kepler_eps > 0`,
+    `newton_eps > 0`, `newton_max_it ≥ 1`, `root_imag_eps ≥ 0`,
+    `max_tested_solutions ≥ 1`.
     """
 
     def __init__(self) -> None: ...
@@ -89,9 +95,10 @@ class IODParams:
         """
         Create a new `IODParamsBuilder` initialized with the **Default** values listed above.
 
-        Return
+        Returns
         ----------
-        * A fresh `IODParamsBuilder` ready for fluent, chainable configuration.
+        IODParamsBuilder
+            A fresh builder to customize and produce an `IODParams`.
         """
         ...
 
@@ -157,7 +164,6 @@ class IODParams:
     def gap_max(self) -> float:
         """Maximum allowed intra-batch time gap (days) for RMS calibration. **Default:** 8/24 (≈ 0.3333)."""
         ...
-
     # Physical plausibility / filtering
     @property
     def max_ecc(self) -> float:
@@ -183,7 +189,6 @@ class IODParams:
     def r2_max_au(self) -> float:
         """Upper plausibility bound on central heliocentric distance (AU). **Default:** 200.0."""
         ...
-
     # Gauss polynomial / solver
     @property
     def aberth_max_iter(self) -> int:
@@ -204,7 +209,6 @@ class IODParams:
     def max_tested_solutions(self) -> int:
         """Cap on admissible Gauss solutions kept after root finding. **Default:** 3."""
         ...
-
     # Numerics
     @property
     def newton_eps(self) -> float:
@@ -220,7 +224,6 @@ class IODParams:
     def root_imag_eps(self) -> float:
         """Max imaginary part magnitude to treat a complex root as real. **Default:** 1.0e-6."""
         ...
-
     # Multi-threading (feature-gated in Rust)
     @property
     def batch_size(self) -> int:
@@ -242,7 +245,6 @@ class IODParams:
         """
         ...
 
-
 class IODParamsBuilder:
     """
     Fluent builder for `IODParams`.
@@ -250,10 +252,6 @@ class IODParamsBuilder:
     Defaults
     -----------------
     The builder starts with the **exact** defaults documented in `IODParams` (see there).
-
-    See also
-    -----------------
-    * `IODParams` — Read-only parameter object produced by `.build()`.
     """
 
     def __init__(self) -> None: ...
@@ -305,7 +303,6 @@ class IODParamsBuilder:
     def gap_max(self, v: float) -> "IODParamsBuilder":
         """Set the maximum intra-batch time gap (days) for RMS calibration. **Default:** 8/24."""
         ...
-
     # --- Physical filters ---
     def max_ecc(self, v: float) -> "IODParamsBuilder":
         """Set the maximum eccentricity accepted. **Default:** 5.0."""
@@ -326,7 +323,6 @@ class IODParamsBuilder:
     def r2_max_au(self, v: float) -> "IODParamsBuilder":
         """Set the upper plausibility bound on heliocentric distance (AU). **Default:** 200.0."""
         ...
-
     # --- Gauss polynomial / solver ---
     def aberth_max_iter(self, v: int) -> "IODParamsBuilder":
         """Set the maximum iterations for the Aberth–Ehrlich solver. **Default:** 50."""
@@ -343,7 +339,6 @@ class IODParamsBuilder:
     def max_tested_solutions(self, v: int) -> "IODParamsBuilder":
         """Cap the number of admissible solutions retained. **Default:** 3."""
         ...
-
     # --- Numerics ---
     def newton_eps(self, v: float) -> "IODParamsBuilder":
         """Set the Newton–Raphson absolute tolerance. **Default:** 1.0e-10."""
@@ -356,7 +351,6 @@ class IODParamsBuilder:
     def root_imag_eps(self, v: float) -> "IODParamsBuilder":
         """Set the imaginary-part threshold to accept nearly-real roots. **Default:** 1.0e-6."""
         ...
-
     # --- Multi-threading (feature-gated in Rust) ---
     def batch_size(self, v: int) -> "IODParamsBuilder":
         """
@@ -380,8 +374,9 @@ class IODParamsBuilder:
         """
         Finalize and materialize an immutable `IODParams` with the chosen settings.
 
-        Return
+        Returns
         ----------
-        * A read-only `IODParams`.
+        IODParams
+            A read-only `IODParams` instance with the configured parameters.
         """
         ...

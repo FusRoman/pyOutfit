@@ -25,7 +25,6 @@ crate-type = ["cdylib"]
 [dependencies]
 outfit = { version = "2.1.0", features = [
     "jpl-download",
-    "progress",
     "parallel",
 ] }
 numpy = { version = "0.26.0", default-features = false }

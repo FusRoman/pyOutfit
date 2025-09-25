@@ -1,0 +1,84 @@
+site_name: ""
+repo_url: https://github.com/FusRoman/pyOutfit
+repo_name: pyOutfit
+edit_uri: ""
+
+theme:
+  name: material
+  features:
+    - content.tabs.link
+    - content.code.copy
+    - content.code.annotate
+    - navigation.sections
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      handlers:
+        python:
+          paths:
+            - .
+            - ..
+          options:
+            docstring_style: numpy
+
+            extra:
+              render_typehint: description
+
+            line_length: 88
+            docstring_section_style: spacy
+            docstring_options:
+              ignore_init_summary: true
+            find_stubs_package: true
+            type_parameter_headings: true
+            show_root_heading: true
+            show_docstring_classes: true
+            show_source: false
+            show_signature: true
+            show_signature_annotations: true
+            merge_init_into_class: true
+            separate_signature: true
+            signature_crossrefs: true
+            members_order: source
+            filters: ["!^_"]
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Tutorials:
+      - pyOutfit Environment: tutorials/pyoutfit_environment.md
+      - IODParams: tutorials/iod_params.md
+      - IOD from trajectories: tutorials/trajectories_tuto.md
+      - Working with orbit results: tutorials/orbit_results.md
+      - Using pandas with pyOutfit: tutorials/pandas_tuto.md
+  - API:
+      - Overview: api/index.md
+      - PyOutfit: api/py_outfit.md
+      - Observer: api/observer.md
+      - IODParams: api/iod_params.md
+      - IODGauss: api/iod_gauss.md
+      - Orbital Elements:
+          - Keplerian Elements: api/orbit_type/keplerian.md
+          - Equinoctial Elements: api/orbit_type/equinoctial.md
+          - Cometary Elements: api/orbit_type/cometary.md
+      - Observations: api/observations.md
+      - Trajectories: api/trajectories.md
+      - Pandas Integration: api/pandas_pyoutfit.md
+
+extra:
+  version:
+    provider: mike
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+watch:
+  - py_outfit
