@@ -59,13 +59,13 @@ The project is in active development and aims for scientific correctness, clear 
 
 ## Documentation map
 
-- Initial Orbit Determination (Gauss): api/iod_gauss.md
-- IOD parameters and configuration: api/iod_params.md
-- Observations and containers: api/observations.md and api/trajectories.md
-- Python package overview: api/py_outfit.md
-- Orbital element types: api/orbit_type/index.md
-- Pandas integration notes: api/pandas_pyoutfit.md
-- Observer definitions and utilities: api/observer.md
+- Python package overview: [PyOutfit](api/py_outfit.md)
+- Observer definitions and utilities: [Observer](api/observer.md)
+- IOD parameters and configuration: [IODParams](api/iod_params.md)
+- Initial Orbit Determination (Gauss): [IODGauss](api/iod_gauss.md)
+- Observations and containers: [Observations](api/observations.md), [Trajectories](api/trajectories.md)
+- Orbital element types: [Keplerian](api/orbit_type/keplerian.md), [Equinoctial](api/orbit_type/equinoctial.md), [Cometary](api/orbit_type/cometary.md)
+- Pandas integration notes: [Pandas Integration](api/pandas_pyoutfit.md)
 
 ## Heritage and licensing
 

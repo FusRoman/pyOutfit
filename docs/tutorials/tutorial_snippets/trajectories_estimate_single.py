@@ -105,7 +105,7 @@ ts = TrajectorySet.from_numpy_degrees(
 
 params = IODParams.builder().max_triplets(100).build()
 
-# Pick the only key in this tiny example
+# Pick the first key in this tiny example
 key = ts.keys()[0]
 obs_view = ts[key]
 res, rms = obs_view.estimate_best_orbit(env, params, seed=123)

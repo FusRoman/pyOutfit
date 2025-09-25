@@ -55,7 +55,7 @@ nav:
       - PyOutfit: api/py_outfit.md
       - Observer: api/observer.md
       - IODParams: api/iod_params.md
-      - IOD_Gauss: api/iod_gauss.md
+      - IODGauss: api/iod_gauss.md
       - Orbital Elements:
           - Keplerian Elements: api/orbit_type/keplerian.md
           - Equinoctial Elements: api/orbit_type/equinoctial.md
