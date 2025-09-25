@@ -37,8 +37,23 @@ Below are non-executable snippets demonstrating the expected structure of a sess
 ### Observer registration
 
 ```py linenums="1" title="environment initialization"
---8<-- "docs/tutorials/tutorial_snippets/observer_registration.py"
+--8<-- "docs/tutorials/tutorial_snippets/observer_registration.py:observer_simple_init"
 ```
+
+### Fetching an observer from an MPC code
+
+Often you already know the MPC observatory code (e.g. "I41" for ZTF at Palomar, "807" for Cerro Paranal, etc.). Instead of manually constructing an `Observer`, you can request a ready‑made instance from the internal registry using `get_observer_from_mpc_code`.
+
+On its first use the environment fetches and parses the MPC Observatory Codes HTML page (ObsCodes list) from the Minor Planet Center. The resulting table is cached in-memory for the remainder of the process, so subsequent lookups do not re-contact the network. If the network is unavailable on the very first lookup, an exception will be raised. Unknown codes also raise a `ValueError` (wrapping a Rust error). Retrieved observers can be used immediately for ingestion; explicit re‑registration is not required unless you are mixing them with custom user-defined sites.
+
+```py linenums="1" title="Environment initialization"
+--8<-- "docs/tutorials/tutorial_snippets/observer_registration.py:from_mpc_code"
+```
+
+Notes:
+
+- Returned observers are immutable handles exposing their geometry to the Rust core; you do not modify longitude/latitude/elevation after creation.
+- If you need to introduce a completely custom site not present in the catalog, build an `Observer` manually and register it (see the previous section snippet) before ingestion.
 
 ## Notes on configuration
 
