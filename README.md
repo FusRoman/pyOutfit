@@ -9,6 +9,7 @@ High-performance Python bindings for the **Outfit** orbit-determination engine (
 	<strong>pyOutfit</strong><br/>
 	<a href="https://github.com/FusRoman/pyOutfit/actions/workflows/ci.yml"><img src="https://github.com/FusRoman/pyOutfit/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"/></a>
 	<a href="https://pypi.org/project/py-outfit/"><img src="https://img.shields.io/pypi/v/py-outfit.svg" alt="PyPI version"/></a>
+	<a href="https://FusRoman.github.io/pyOutfit/"><img src="https://img.shields.io/badge/docs-GitHub%20Pages-success.svg" alt="Documentation"/></a>
 	<a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.12-blue.svg" alt="Python 3.12"/></a>
 	<a href="https://github.com/PyO3/maturin"><img src="https://img.shields.io/badge/build-maturin-informational.svg" alt="Build (maturin)"/></a>
 	<a href="LICENSE"><img src="https://img.shields.io/badge/license-CeCILL--C-blue.svg" alt="License: CeCILL-C"/></a>
