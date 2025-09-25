@@ -16,7 +16,7 @@ The environment holds ephemerides and the astrometric error model. The first cal
 
 You can supply your own geodetic coordinates or use an MPC code if available. Elevation is expected in kilometers.
 
-```py linenums="1" title="Environment initialization"
+```py linenums="1" title="Observer creation"
 --8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:observer_init"
 ```
 
@@ -24,7 +24,7 @@ You can supply your own geodetic coordinates or use an MPC code if available. El
 
 We create three observations (the minimum for Gauss IOD) at distinct times. Use either the degree ingestion path (shown) or radians. Times are MJD(TT). Uncertainties are 1-sigma values (arcseconds in the degree path).
 
-```py linenums="1" title="Environment initialization"
+```py linenums="1" title="Setup small data"
 --8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:minimal_data"
 ```
 
@@ -32,7 +32,7 @@ We create three observations (the minimum for Gauss IOD) at distinct times. Use 
 
 The TrajectorySet groups observations by ID. Even for one object it is the simplest way to obtain an `Observations` handle that exposes `estimate_best_orbit`.
 
-```py linenums="1" title="Environment initialization"
+```py linenums="1" title="Push data into a trajectory container"
 --8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:build_trajectoryset"
 ```
 
@@ -40,7 +40,7 @@ The TrajectorySet groups observations by ID. Even for one object it is the simpl
 
 Use the builder to tweak only what you need. Here we disable noise realizations for determinism and cap the search space for speed.
 
-```py linenums="1" title="Environment initialization"
+```py linenums="1" title="IOD Parameter configuration"
 --8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:configure_iodparams"
 ```
 
@@ -48,7 +48,7 @@ Use the builder to tweak only what you need. Here we disable noise realizations 
 
 `estimate_best_orbit` returns a `(GaussResult, rms)` pair. The RMS is an internal quality metric (angular residual scale).
 
-```py linenums="1" title="Environment initialization"
+```py linenums="1" title="Initial orbit determination"
 --8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:estimate_orbit"
 ```
 
@@ -56,13 +56,13 @@ Use the builder to tweak only what you need. Here we disable noise realizations 
 
 Depending on internal selection, a Keplerian, Equinoctial, or Cometary set is produced. Access helpers return `None` when the family does not match.
 
-```py linenums="1" title="Environment initialization"
+```py linenums="1" title="inspect results"
 --8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py:inspect_results"
 ```
 
 ## 8. Full minimal script (copy & run)
 
-```py linenums="1" title="Environment initialization"
+```py linenums="1" title="Full quickstart script (copy and past)"
 --8<-- "docs/tutorials/tutorial_snippets/quickstart_snippet.py"
 ```
 

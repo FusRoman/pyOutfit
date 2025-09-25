@@ -28,7 +28,7 @@ Below are non-executable snippets demonstrating the expected structure of a sess
 
 ### Environment initialization
 
-```py linenums="1" title="environment initialization"
+```py linenums="1" title="Minimal environment setup"
 --8<-- "docs/tutorials/tutorial_snippets/environment_init.py"
 ```
 
@@ -36,7 +36,7 @@ Below are non-executable snippets demonstrating the expected structure of a sess
 
 ### Observer registration
 
-```py linenums="1" title="environment initialization"
+```py linenums="1" title="Observer registration"
 --8<-- "docs/tutorials/tutorial_snippets/observer_registration.py:observer_simple_init"
 ```
 
@@ -46,7 +46,7 @@ Often you already know the MPC observatory code (e.g. "I41" for ZTF at Palomar, 
 
 On its first use the environment fetches and parses the MPC Observatory Codes HTML page (ObsCodes list) from the Minor Planet Center. The resulting table is cached in-memory for the remainder of the process, so subsequent lookups do not re-contact the network. If the network is unavailable on the very first lookup, an exception will be raised. Unknown codes also raise a `ValueError` (wrapping a Rust error). Retrieved observers can be used immediately for ingestion; explicit re‑registration is not required unless you are mixing them with custom user-defined sites.
 
-```py linenums="1" title="Environment initialization"
+```py linenums="1" title="Fetch from MPC"
 --8<-- "docs/tutorials/tutorial_snippets/observer_registration.py:from_mpc_code"
 ```
 
